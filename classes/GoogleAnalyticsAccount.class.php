@@ -6,7 +6,7 @@ class GoogleAnalyticsAccount {
 	
 	private $_accountId;
 	private $_name;
-	private $_poperties = array();
+	private $_properties = array();
 
 	/*
 	 * Default constructor
@@ -47,7 +47,7 @@ class GoogleAnalyticsAccount {
 	 * Sets Properties
 	 */
 	function setProperties(array $properties) {
-		$this->_poperties = $properties;	
+		$this->_properties = $properties;	
 	}
 	
 	
@@ -55,7 +55,7 @@ class GoogleAnalyticsAccount {
 	 * Gets Properties
 	 */
 	function getProperties() {
-		return $this->_poperties;	
+		return $this->_properties;	
 	}
 	
 	/*

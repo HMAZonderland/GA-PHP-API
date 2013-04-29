@@ -21,7 +21,7 @@ $client->setDeveloperKey('AIzaSyAYWJ-TCPgMkE101Jy2OLZXkmyP1-cCsBE'); // API key
 
 // $service implements the client interface, has to be set before auth cal	  
 $service = new Google_AnalyticsService($client);
-$GoogleAccount;
+$GoogleAnalyticsAccount = null;
 
 if (isset($_GET['logout'])) { // logout: destroy token
     unset($_SESSION['token']);
@@ -46,26 +46,33 @@ if (!$client->getAccessToken()) { // auth call to google
 
 // Stap 1, account kiezen.
 
-
 // Stap 2, property kiezen.
-echo "Shoarma rol";
 
 // Stap 3, profiel kiezen.
 
-
-function ListAccounts($service)
+function listManagementProfiles($service, $propertyId, $accountId)
 {
-	$list = listManagementProfiles($service, "~all", "~all");	
+	//echo "VARS: " . $propertyId . " " . $accountId;
+	return $service->management_profiles->listManagementProfiles($accountId, $propertyId);
+}
+
+function ListAccounts($service, $propertyId, $accountId)
+{
+	$list = listManagementProfiles($service, $propertyId, $accountId);	
+	
+	/*echo "<pre>";
+	print_r($list);
+	echo "</pre>";*/
+	
+	$accounts = array();
 	
 	if (sizeof($list['items']) > 0) {
 		
-		$accounts = array();
-		
 		foreach ($list['items'] as $item) {	
 	
-			echo "<pre>";
+			/*echo "<pre>";
 			print_r($item);
-			echo "</pre>";
+			echo "</pre>";*/
 		
 			// GoogleAnalyticsAccount
 			$accountId = $item['accountId'];
@@ -101,7 +108,7 @@ function ListAccounts($service)
 			// Check if the property excists in the specified account array.
 			else if (!array_key_exists($webPropertyId, $accounts[$accountId]->getProperties())) {
 				
-				echo $webPropertyId . "<br />";
+				//echo $webPropertyId . "<br />";
 				
 				// The property doesn't exists, lets create it and add the profile to it.
 				$property = new Property();
@@ -114,7 +121,7 @@ function ListAccounts($service)
 				
 			} else {
 				
-				echo $profileId . "<br />";
+				//echo $profileId . "<br />";
 				
 				// Property exists, lets add the profile to it
 				$properties = $accounts[$accountId]->getProperties();
@@ -124,16 +131,57 @@ function ListAccounts($service)
 			}
 		}
 		
-		echo "<pre>";
+		/*echo "<pre>";
 		print_r($accounts);
-		echo "</pre>";
+		echo "</pre>";*/
+	}
+	return $accounts;
+}
+
+if ((isset($_GET['propertyId']) && !empty($_GET['propertyId'])) && (isset($_GET['accountId']) && !empty($_GET['accountId'])) && (isset($_GET['profileId']) && !empty($_GET['profileId'])))
+{
+	$propertyId = $_GET['propertyId'];
+	$accountId = $_GET['accountId'];
+	$profileId = $_GET['profileId'];
+	
+	$GoogleAnalyticsAccountList = ListAccounts($service, $propertyId, $accountId);
+	reset($GoogleAnalyticsAccountList);
+	
+	$GoogleAnalyticsAccount = $GoogleAnalyticsAccountList[key($GoogleAnalyticsAccountList)];
 		
-		die();
-		
-		echo "selecteer een WebProperty<br />";
-		foreach ($webproperties as $GoogleAccount)
+	/*echo "<pre>";
+	print_r($GoogleAnalyticsAccount);
+	echo "</pre>";*/
+}
+else
+{
+	$accounts = ListAccounts($service, "~all", "~all");
+	
+	if (sizeof($accounts) > 0)
+	{
+		echo "Selecteer een account, property en profile: <br />";
+				
+		foreach ($accounts as $account)
 		{
-			echo "- <a href=\"index.php?webPropertyId=".$GoogleAccount->getWebPropertyId()."&accountId=".$GoogleAccount->getAccountId()."\">".$GoogleAccount->getUrl()."</a><br />";
+			$properties = $account->getProperties();
+			
+			/*echo "<pre>";
+			print_r($properties);
+			echo "</pre>";*/
+			
+			foreach ($properties as $property)
+			{
+				$profiles = $property->getProfiles();
+			
+				/*echo "<pre>";
+				print_r($profiles);
+				echo "</pre>";*/
+				
+				foreach ($profiles as $profile)
+				{
+					echo "- <a href=\"index.php?accountId=".$account->getAccountId()."&profileId=".$profile->getProfileId()."&propertyId=".$property->getWebPropertyId()."\">".$profile->getName()."</a><br />";
+				}
+			}
 		}
 	}
 	else
@@ -142,96 +190,77 @@ function ListAccounts($service)
 	}
 }
 
-function getWebPropertyProfiles($service, $webPropertyId, $accountId)
-{
-	$profiles = listManagementProfiles($service, $webPropertyId, $accountId);
-	
-	/*echo "<pre>";
-	print_r($profiles);
-	echo "</pre>";*/
-	
-	$GA = new GoogleAccount($webPropertyId);
-	
-	foreach ($profiles['items'] as $profile)
-	{	
-		$GA->arrayPush($profile['id']);
-	}
-	
-	return $GA;
-}
-
-function listManagementProfiles($service, $webPropertyId, $accountId)
-{
-	return $service->management_profiles->listManagementProfiles($accountId, $webPropertyId);
-}
-
-if ((isset($_GET['webPropertyId']) && !empty($_GET['webPropertyId'])) && (isset($_GET['accountId']) && !empty($_GET['accountId'])))
-{
-	$webPropertyId = $_GET['webPropertyId'];
-	$accountId = $_GET['accountId'];
-	$GoogleAccount = getWebPropertyProfiles($service, $webPropertyId, $accountId);	
-}
-else
-{
-	ListAccounts($service);
-}
-
-if (isset($GoogleAccount) && $GoogleAccount->sizeof() > 0)
+if ((isset($GoogleAnalyticsAccount)) && (sizeof($GoogleAnalyticsAccount->getProperties() > 0)) && $GoogleAnalyticsAccount != null)
 { 
 
 	$results = array();
 	$set = array();
 
-	$profiles = $GoogleAccount->getProfiles();
-	foreach ($profiles as $projectId)
+	$properties = $GoogleAnalyticsAccount->getProperties();
+	
+	foreach ($properties as $property)
 	{
-		echo "==============================[ ".$projectId." ]==============================";
-		// Benamingen
-		// metrics
-		$_params[] = 'Bron';
-		$_params[] = 'Medium';
-		$_params[] = 'bezoekers';
-		$_params[] = 'opbrengst per transactie';
-		// dimensions
-		$_params[] = 'transacties';
-		$_params[] = 'unieke aankopen';
-		
-		// Tijd filter
-		$from = date('Y-m-d', time()-2*24*60*60); // 20 days
-		$to = date('Y-m-d'); // today
-		
-		// metrics + dimensions uit de documentenatie :
-		// https://developers.google.com/analytics/devguides/reporting/core/dimsmets
-		$dimensions = 'ga:source,ga:medium';
-		$metrics = 'ga:visits,ga:transactionRevenue,ga:transactions,ga:uniquePurchases';
-		
-		// Ophalen
-		$data = $service->data_ga->get('ga:'.$projectId, $from, $to, $metrics, array('dimensions' => $dimensions));
-		
-		if (sizeof($data['rows']) > 0) {
-			foreach($data['rows'] as $row) {
-				$set[''.$row[0].'']['medium'] = $row[1];
-				$set[''.$row[0].'']['visits'] = $row[2];
-				$set[''.$row[0].'']['transactionRevenue'] = $row[3];
-				$set[''.$row[0].'']['transactions'] = $row[4];
-				$set[''.$row[0].'']['uniquePurchases'] = $row[5];	
-				array_push($results, $set[''.$row[0].'']);
+		if (sizeof($property->getProfiles() > 0))
+		{
+			$profiles = $property->getProfiles();
+			foreach ($profiles as $profile)
+			{
+				echo "==============================[ ".$profile->getProfileId()." ]==============================";
+				
+				// Benamingen
+				// metrics
+				$_params[] = 'Bron';
+				$_params[] = 'Medium';
+				$_params[] = 'bezoekers';
+				$_params[] = 'opbrengst per transactie';
+				// dimensions
+				$_params[] = 'transacties';
+				$_params[] = 'unieke aankopen';
+				
+				// Tijd filter
+				$from = date('Y-m-d', time()-2*24*60*60); // 2 days
+				$to = date('Y-m-d'); // today
+				
+				// metrics + dimensions uit de documentenatie :
+				// https://developers.google.com/analytics/devguides/reporting/core/dimsmets
+				$dimensions = 'ga:source,ga:medium';
+				$metrics = 'ga:visits,ga:transactionRevenue,ga:transactions,ga:uniquePurchases';
+				
+				// Ophalen
+				$data = $service->data_ga->get('ga:'.$profile->getProfileId(), $from, $to, $metrics, array('dimensions' => $dimensions));
+				
+				if (isset($data['rows']) && sizeof($data['rows']) > 0) 
+				{
+					foreach($data['rows'] as $row) 
+					{
+						$set[''.$row[0].'']['medium'] = $row[1];
+						$set[''.$row[0].'']['visits'] = $row[2];
+						$set[''.$row[0].'']['transactionRevenue'] = $row[3];
+						$set[''.$row[0].'']['transactions'] = $row[4];
+						$set[''.$row[0].'']['uniquePurchases'] = $row[5];	
+						array_push($results, $set[''.$row[0].'']);
+					}
+					$set['totalsForAllResults']['medium'] = "totals";
+					$set['totalsForAllResults']['visits'] = $data['totalsForAllResults']['ga:visits'];
+					$set['totalsForAllResults']['transactionRevenue'] = $data['totalsForAllResults']['ga:transactionRevenue'];
+					$set['totalsForAllResults']['transactions'] = $data['totalsForAllResults']['ga:transactions'];
+					$set['totalsForAllResults']['uniquePurchases'] = $data['totalsForAllResults']['ga:uniquePurchases'];
+					array_push($results, $set['totalsForAllResults']);
+					
+					echo "<pre>";
+					print_r($results);
+					echo "</pre>";
+				} 
+				else
+				{
+					echo "<br />Geen data.<br />";
+				}
+				
+				/*echo "<br />==============================[ DEBUG ]==============================";
+				echo "<pre>";
+				print_r($data);
+				echo "</pre>";*/
 			}
-			$set['totalsForAllResults']['medium'] = "totals";
-			$set['totalsForAllResults']['visits'] = $data['totalsForAllResults']['ga:visits'];
-			$set['totalsForAllResults']['transactionRevenue'] = $data['totalsForAllResults']['ga:transactionRevenue'];
-			$set['totalsForAllResults']['transactions'] = $data['totalsForAllResults']['ga:transactions'];
-			$set['totalsForAllResults']['uniquePurchases'] = $data['totalsForAllResults']['ga:uniquePurchases'];
-			array_push($results, $set['totalsForAllResults']);
-		} 
-		
-		echo "<pre>";
-		print_r($results);
-		echo "</pre>";
-		
-		/*echo "<br />==============================[ DEBUG ]==============================";
-		echo "<pre>";
-		print_r($data);
-		echo "</pre>";*/
+		}
 	}
 }

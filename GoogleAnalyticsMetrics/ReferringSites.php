@@ -12,7 +12,7 @@ class ReferringSites extends GoogleAnalyticsMetrics
 		$metrics = "ga:pageviews,ga:timeOnSite,ga:exits";
 		
 		// eerst dimensions daarna metrics
-		$params[] = "";
+		$params[] = "Bron";
 	}
 }
 ?>

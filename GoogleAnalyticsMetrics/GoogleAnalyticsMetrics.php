@@ -67,5 +67,9 @@ abstract class GoogleAnalyticsMetrics
 	{
 		return $this->_params;	
 	}
+	
+	/*
+	 *
+	 */
 }
 ?>
