@@ -48,7 +48,7 @@ if (!$client->getAccessToken()) { // auth call to google
 
 
 // Stap 2, property kiezen.
-
+echo "Shoarma rol";
 
 // Stap 3, profiel kiezen.
 
