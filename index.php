@@ -233,12 +233,13 @@ if ((isset($GoogleAnalyticsAccount)) && (sizeof($GoogleAnalyticsAccount->getProp
 				{
 					foreach($data['rows'] as $row) 
 					{
-						$set[''.$row[0].'']['medium'] = $row[1];
-						$set[''.$row[0].'']['visits'] = $row[2];
-						$set[''.$row[0].'']['transactionRevenue'] = $row[3];
-						$set[''.$row[0].'']['transactions'] = $row[4];
-						$set[''.$row[0].'']['uniquePurchases'] = $row[5];	
-						array_push($results, $set[''.$row[0].'']);
+                        $key = $row[0];
+						$set["$key"]['medium'] = $row[1];
+						$set[$key]['visits'] = $row[2];
+						$set[$key]['transactionRevenue'] = $row[3];
+						$set[$key]['transactions'] = $row[4];
+						$set[$key]['uniquePurchases'] = $row[5];
+						array_push($results, $set[$key]);
 					}
 					$set['totalsForAllResults']['medium'] = "totals";
 					$set['totalsForAllResults']['visits'] = $data['totalsForAllResults']['ga:visits'];
@@ -255,7 +256,6 @@ if ((isset($GoogleAnalyticsAccount)) && (sizeof($GoogleAnalyticsAccount->getProp
 				{
 					echo "<br />Geen data.<br />";
 				}
-				
 				/*echo "<br />==============================[ DEBUG ]==============================";
 				echo "<pre>";
 				print_r($data);
