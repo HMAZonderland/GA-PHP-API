@@ -7,17 +7,15 @@
  * To change this template use File | Settings | File Templates.
  */
 
-// TODO change to true before committing
-define("DEBUG", true);
+// TODO change to false before committing
+define("DEBUG", false);
 
-// TODO test commit on branch development meer
-
-if(DEBUG) {
+if(DEBUG === true) {
     $oauthClientId = '1004798276934-9ftpna6pkk2ugai7kjs02jstvlkorsh8.apps.googleusercontent.com';
     $oauthClientSecret = 'mhiyTXd7x71Q0vFJF37pNWOE';
-    $oathRedirectURI = 'http://127.0.0.1/oauth2callback';
+    $oathRedirectURI = 'http://localhost:8080/analytics/oauth2callback';
     $devKey = 'AIzaSyAh6S1L0znVsFXJxkhBM2OWb8gBMHnSDHs';
-    $siteName = 'localhost';
+    $siteName = 'localhost:8080/analytics/oauth2callback';
 } else {
     $oauthClientId = '211121854101.apps.googleusercontent.com';
     $oauthClientSecret = 'UWMHZxqbyYvbzFrVqSK_45to';
