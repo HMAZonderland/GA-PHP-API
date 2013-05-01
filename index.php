@@ -201,73 +201,9 @@ if ((isset($GoogleAnalyticsAccount)) && (sizeof($GoogleAnalyticsAccount->getProp
 	$TransactionRevenueMetrics = new TransactionRevenueMetrics($service, $_GET['profileId'], $from, $to);
 	foreach ($TransactionRevenueMetrics->getRevenuePerSource() as $source)
 	{
-<<<<<<< HEAD
-		if (sizeof($property->getProfiles() > 0))
-		{
-			$profiles = $property->getProfiles();
-			foreach ($profiles as $profile)
-			{
-				echo "==============================[ ".$profile->getProfileId()." ]==============================";
-				
-				// Benamingen
-				// metrics
-				$_params[] = 'Bron';
-				$_params[] = 'Medium';
-				$_params[] = 'bezoekers';
-				$_params[] = 'opbrengst per transactie';
-				// dimensions
-				$_params[] = 'transacties';
-				$_params[] = 'unieke aankopen';
-				
-				// Tijd filter
-				$from = date('Y-m-d', time()-2*24*60*60); // 2 days
-				$to = date('Y-m-d'); // today
-				
-				// metrics + dimensions uit de documentenatie :
-				// https://developers.google.com/analytics/devguides/reporting/core/dimsmets
-				$dimensions = 'ga:source,ga:medium';
-				$metrics = 'ga:visits,ga:transactionRevenue,ga:transactions,ga:uniquePurchases';
-				
-				// Ophalen
-				$data = $service->data_ga->get('ga:'.$profile->getProfileId(), $from, $to, $metrics, array('dimensions' => $dimensions));
-				
-				if (isset($data['rows']) && sizeof($data['rows']) > 0) 
-				{
-					foreach($data['rows'] as $row) 
-					{
-                        $key = $row[0];
-						$set["$key"]['medium'] = $row[1];
-						$set[$key]['visits'] = $row[2];
-						$set[$key]['transactionRevenue'] = $row[3];
-						$set[$key]['transactions'] = $row[4];
-						$set[$key]['uniquePurchases'] = $row[5];
-						array_push($results, $set[$key]);
-					}
-					$set['totalsForAllResults']['medium'] = "totals";
-					$set['totalsForAllResults']['visits'] = $data['totalsForAllResults']['ga:visits'];
-					$set['totalsForAllResults']['transactionRevenue'] = $data['totalsForAllResults']['ga:transactionRevenue'];
-					$set['totalsForAllResults']['transactions'] = $data['totalsForAllResults']['ga:transactions'];
-					$set['totalsForAllResults']['uniquePurchases'] = $data['totalsForAllResults']['ga:uniquePurchases'];
-					array_push($results, $set['totalsForAllResults']);
-					
-					echo "<pre>";
-					print_r($results);
-					echo "</pre>";
-				} 
-				else
-				{
-					echo "<br />Geen data.<br />";
-				}
-				/*echo "<br />==============================[ DEBUG ]==============================";
-				echo "<pre>";
-				print_r($data);
-				echo "</pre>";*/
-			}
-		}
-=======
+
 		echo $source['source'] . " = " . round($source['transactionRevenue'] / $TransactionRevenueMetrics->getTotalRevenue() * 100, 2) . "%<br />";
 		echo $source['source'] . " = " . $source['transactionRevenue'] . " | " . $TransactionRevenueMetrics->getTotalRevenue() . "<br />";
 		echo "<br />";
->>>>>>> Parser update
 	}
 }
