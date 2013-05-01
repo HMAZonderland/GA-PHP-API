@@ -6,6 +6,8 @@ error_reporting(-1);
 require_once dirname(__FILE__).'/GoogleClientLib/Google_Client.php';
 require_once dirname(__FILE__).'/GoogleClientLib/contrib/Google_AnalyticsService.php';
 require_once dirname(__FILE__).'/classes/GoogleAnalyticsAccount.class.php';
+require_once dirname(__FILE__).'/classes/GoogleAnalyticsMetricsParser.php';
+require_once dirname(__FILE__).'/GoogleAnalyticsMetrics/TransactionRevenueMetrics.php';
 require_once dirname(__FILE__).'/classes/Profile.class.php';
 require_once dirname(__FILE__).'/classes/Property.class.php';
 
@@ -192,14 +194,14 @@ else
 
 if ((isset($GoogleAnalyticsAccount)) && (sizeof($GoogleAnalyticsAccount->getProperties() > 0)) && $GoogleAnalyticsAccount != null)
 { 
-
-	$results = array();
-	$set = array();
-
-	$properties = $GoogleAnalyticsAccount->getProperties();
+	// Tijd filter
+	$from = date('Y-m-d', time()-365*24*60*60); // 2 days
+	$to = date('Y-m-d'); // today
 	
-	foreach ($properties as $property)
+	$TransactionRevenueMetrics = new TransactionRevenueMetrics($service, $_GET['profileId'], $from, $to);
+	foreach ($TransactionRevenueMetrics->getRevenuePerSource() as $source)
 	{
+<<<<<<< HEAD
 		if (sizeof($property->getProfiles() > 0))
 		{
 			$profiles = $property->getProfiles();
@@ -262,5 +264,10 @@ if ((isset($GoogleAnalyticsAccount)) && (sizeof($GoogleAnalyticsAccount->getProp
 				echo "</pre>";*/
 			}
 		}
+=======
+		echo $source['source'] . " = " . round($source['transactionRevenue'] / $TransactionRevenueMetrics->getTotalRevenue() * 100, 2) . "%<br />";
+		echo $source['source'] . " = " . $source['transactionRevenue'] . " | " . $TransactionRevenueMetrics->getTotalRevenue() . "<br />";
+		echo "<br />";
+>>>>>>> Parser update
 	}
 }
