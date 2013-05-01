@@ -10,6 +10,7 @@ require_once dirname(__FILE__).'/classes/GoogleAnalyticsMetricsParser.php';
 require_once dirname(__FILE__).'/GoogleAnalyticsMetrics/TransactionRevenueMetrics.php';
 require_once dirname(__FILE__).'/classes/Profile.class.php';
 require_once dirname(__FILE__).'/classes/Property.class.php';
+require_once dirname(__FILE__).'/classes/Calculator.class.php';
 
 $scriptUri = "http://".$_SERVER["HTTP_HOST"].$_SERVER['PHP_SELF'];
 
@@ -195,15 +196,26 @@ else
 if ((isset($GoogleAnalyticsAccount)) && (sizeof($GoogleAnalyticsAccount->getProperties() > 0)) && $GoogleAnalyticsAccount != null)
 { 
 	// Tijd filter
-	$from = date('Y-m-d', time()-365*24*60*60); // 2 days
+	$from = date('Y-m-d', time()-30*24*60*60); // 30 days
 	$to = date('Y-m-d'); // today
+	
+	$kosten = 14000; // per maand
+	
+	$calc = new Calculator();
+	$calc->setCosts($kosten);
 	
 	$TransactionRevenueMetrics = new TransactionRevenueMetrics($service, $_GET['profileId'], $from, $to);
 	foreach ($TransactionRevenueMetrics->getRevenuePerSource() as $source)
 	{
-
-		echo $source['source'] . " = " . round($source['transactionRevenue'] / $TransactionRevenueMetrics->getTotalRevenue() * 100, 2) . "%<br />";
-		echo $source['source'] . " = " . $source['transactionRevenue'] . " | " . $TransactionRevenueMetrics->getTotalRevenue() . "<br />";
+		$calc->setRevenue($TransactionRevenueMetrics->getTotalRevenue());
+		$calc->setRatio($source['transactionRevenue'] / $TransactionRevenueMetrics->getTotalRevenue());
+		
+		echo "<h1>" . $source['source'] . "</h1>";
+		echo "Percentage = " . $calc->getRatioReadable() . "%<br />";
+		echo "Omzet verdeling = &euro;" . $calc->calculateRevenueRatioReadable() . " | &euro;" . $calc->getRevenue() . "<br />";
+		echo "Kosten verdeling = &euro;" . $calc->calculateCostsRatioReadable() . " | 	&euro;" . $calc->getCosts() . "<br />";
+		echo "Winst: &euro;" .  $calc->calculateRatioProfitReadable() . "<br />";
+		echo "Rendement: " . $calc->calulateProfitPercentageReadable() . "%<br />";
 		echo "<br />";
 	}
 }
