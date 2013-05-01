@@ -14,27 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+require_once '../config.php';
 
 global $apiConfig;
-$apiConfig = array(
-    // True if objects should be returned by the service classes.
-    // False if associative arrays should be returned (default behavior).
-    'use_objects' => false,
-  
-    // The application_name is included in the User-Agent HTTP header.
-    'application_name' => 'esser-emerik rendements berekening API',
 
-    // OAuth2 Settings, you can get these keys at https://code.google.com/apis/console
-    'oauth2_client_id' => '211121854101.apps.googleusercontent.com',
-    'oauth2_client_secret' => 'UWMHZxqbyYvbzFrVqSK_45to',
-    'oauth2_redirect_uri' => 'http://esser-emmerik.hugozonderland.nl/oauth2callback
-',
+$apiConfig = array(
+        // True if objects should be returned by the service classes.
+        // False if associative arrays should be returned (default behavior).
+        'use_objects' => false,
+
+        // The application_name is included in the User-Agent HTTP header.
+        'application_name' => 'esser-emerik rendements berekening API',
+
+        // OAuth2 Settings, you can get these keys at https://code.google.com/apis/console
+        'oauth2_client_id' => $this->$oauthClientId,
+        'oauth2_client_secret' => $this->$oauthClientSecret,
+        'oauth2_redirect_uri' => $this->$oathRedirectURI,
 
     // The developer key, you get this at https://code.google.com/apis/console
-    'developer_key' => 'AIzaSyAYWJ-TCPgMkE101Jy2OLZXkmyP1-cCsBE',
+    'developer_key' => $this->$devKey,
   
     // Site name to show in the Google's OAuth 1 authentication screen.
-    'site_name' => 'esser-emmerik.hugozonderland.nl',
+    'site_name' => $this->$siteName,
 
     // Which Authentication, Storage and HTTP IO classes to use.
     'authClass'    => 'Google_OAuth2',
