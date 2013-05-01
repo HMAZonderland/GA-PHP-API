@@ -11,6 +11,7 @@
 define("DEBUG", true);
 
 // TODO test commit on branch development
+// test
 
 if(DEBUG) {
     $oauthClientId = '1004798276934-9ftpna6pkk2ugai7kjs02jstvlkorsh8.apps.googleusercontent.com';
