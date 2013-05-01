@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-require_once '../config.php';
+require_once './config.php';
 
 global $apiConfig;
 
@@ -27,15 +27,15 @@ $apiConfig = array(
         'application_name' => 'esser-emerik rendements berekening API',
 
         // OAuth2 Settings, you can get these keys at https://code.google.com/apis/console
-        'oauth2_client_id' => $this->$oauthClientId,
-        'oauth2_client_secret' => $this->$oauthClientSecret,
-        'oauth2_redirect_uri' => $this->$oathRedirectURI,
+        'oauth2_client_id' => $oauthClientId,
+        'oauth2_client_secret' => $oauthClientSecret,
+        'oauth2_redirect_uri' => $oathRedirectURI,
 
     // The developer key, you get this at https://code.google.com/apis/console
-    'developer_key' => $this->$devKey,
+    'developer_key' => $devKey,
   
     // Site name to show in the Google's OAuth 1 authentication screen.
-    'site_name' => $this->$siteName,
+    'site_name' => $siteName,
 
     // Which Authentication, Storage and HTTP IO classes to use.
     'authClass'    => 'Google_OAuth2',
