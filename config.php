@@ -10,8 +10,7 @@
 // TODO change to true before committing
 define("DEBUG", true);
 
-// TODO test commit on branch development
-// test
+// TODO test commit on branch development meer
 
 if(DEBUG) {
     $oauthClientId = '1004798276934-9ftpna6pkk2ugai7kjs02jstvlkorsh8.apps.googleusercontent.com';
