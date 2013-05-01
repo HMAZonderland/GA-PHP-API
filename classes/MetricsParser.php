@@ -17,7 +17,7 @@ class MetricsParser
 	
 	// Dates used as scope, 
 	private $_from = date;
-	private $to = date;
+	private $_to = date;
 	
 	/*
 	 * Constructor also returns the parse function.
