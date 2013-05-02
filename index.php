@@ -131,11 +131,11 @@ if ((isset($GoogleAnalyticsAccount)) && (sizeof($GoogleAnalyticsAccount->getProp
             echo "Kosten " . $source['source'] . " = &euro;" . $calc->calculateCostsRatioReadable() . " <br />";
 
             echo "Winst (omzet - (vaste) kosten): &euro;" . $calc->calculateRatioProfitReadable() . "<br />";
-            echo "Rendement zonder specifieke kosten: " . $calc->calulateProfitPercentageReadable() . "%<br /><br />";
+            echo "Rendement zonder specifieke kosten: " . $calc->calculateProfitPercentageReadable() . "%<br /><br />";
 
             echo "Specifieke kosten = &euro;" . $calc->getSpecificCosts() . "<br />";
             echo "Winst (omzet - ((vaste) kosten + specifiekekosten): &euro;" . $calc->calculateRatioSpecificProfitReadable() . "<br />";
-            echo "Rendement met specifieke kosten: " . $calc->calulateProfitSpecificPercentageReadable() . "&";
+            echo "Rendement met specifieke kosten: " . $calc->calculateProfitSpecificPercentageReadable() . "&";
         }
     }
 }
