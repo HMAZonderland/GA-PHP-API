@@ -1,51 +1,77 @@
 <?php
 
-class Profile {
-	
-	private $_profileId;
-	private $_name;
-	private $_websiteUrl;
-	
-	/*
-	 * Sets profileId
-	 */
-	function setProfileId($profileId) {
-		$this->_profileId = $profileId;
-	}
-	
-	/*
-	 * Gets profileId
-	 */
-	function getProfileId() {
-		return $this->_profileId;
-	}
-	
-	/*
-	 * Sets name
-	 */
-	function setName($name) {
-		$this->_name = $name;	
-	}
-	
-	/*
-	 * Sets name
-	 */
-	function getName() {
-		return $this->_name;	
-	}
-	
-	/*
-	 * Sets websiteUrl
-	 */
-	function setWebsiteUrl($websiteUrl) {
-		$this->_websiteUrl = $websiteUrl;	
-	}
-	
-	/*
-	 * Gets websiteUrl
-	 */
-	function getWebsiteUrl() {
-		return $this->_websiteUrl;	
-	}
+/**
+ * Class Profile
+ */
+class Profile
+{
+
+    /**
+     * containing profileId
+     * @var int
+     */
+    private $_profileId;
+
+    /**
+     * containing profile name
+     * @var string
+     */
+    private $_name;
+
+    /**
+     * containing profile website url
+     * @var string
+     */
+    private $_websiteUrl;
+
+    /**
+     * @return mixed
+     */
+    public function getProfileId()
+    {
+        return $this->_profileId;
+    }
+
+    /**
+     * @param $profileId
+     */
+    public function setProfileId($profileId)
+    {
+        $this->_profileId = $profileId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->_name;
+    }
+
+
+    /**
+     * @param $name
+     */
+    public function setName($name)
+    {
+        $this->_name = $name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getWebsiteUrl()
+    {
+        return $this->_websiteUrl;
+    }
+
+    /**
+     * @param $websiteUrl
+     */
+    public function setWebsiteUrl($websiteUrl)
+    {
+        $this->_websiteUrl = $websiteUrl;
+    }
 }
+
 ?>
