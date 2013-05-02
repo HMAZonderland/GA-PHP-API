@@ -23,10 +23,10 @@ date_default_timezone_set('Europe/London');
 set_include_path(get_include_path() . PATH_SEPARATOR . '../../../Classes/');
 
 /** PHPExcel_IOFactory */
-include 'PHPExcel/IOFactory.php';
+require_once dirname(__FILE__).'/PhpExcel/PHPExcel/IOFactory.php';
 
 
-$inputFileName = './sampleData/example1.xls';
+$inputFileName = 'http://cl.beslist.nl/shop/stats/beslist_statistieken.xls/?startdate=01-05-2013&enddate=01-05-2013&accepted=1&shop_id=13683';
 echo 'Loading file ',pathinfo($inputFileName,PATHINFO_BASENAME),' using IOFactory to identify the format<br />';
 $objPHPExcel = PHPExcel_IOFactory::load($inputFileName);
 
