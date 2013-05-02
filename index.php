@@ -12,7 +12,7 @@ require_once dirname(__FILE__).'/classes/Profile.class.php';
 require_once dirname(__FILE__).'/classes/Property.class.php';
 require_once dirname(__FILE__).'/classes/Calculator.class.php';
 require_once dirname(__FILE__).'/classes/GoogleAnalyticsAccountSelector.php';
-require_once dirname(__FILE__).'/classes/ExcelReader.php';
+//require_once dirname(__FILE__).'/classes/ExcelReader.php';
 
 $scriptUri = "http://".$_SERVER["HTTP_HOST"].$_SERVER['PHP_SELF'];
 
