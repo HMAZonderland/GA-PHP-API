@@ -11,6 +11,7 @@ require_once dirname(__FILE__).'/GoogleAnalyticsMetrics/TransactionRevenueMetric
 require_once dirname(__FILE__).'/classes/Profile.class.php';
 require_once dirname(__FILE__).'/classes/Property.class.php';
 require_once dirname(__FILE__).'/classes/Calculator.class.php';
+require_once dirname(__FILE__).'/classes/GoogleAnalyticsAccountSelector.php';
 
 $scriptUri = "http://".$_SERVER["HTTP_HOST"].$_SERVER['PHP_SELF'];
 
@@ -46,7 +47,7 @@ if (!$client->getAccessToken()) { // auth call to google
     die;
 }
 
-$GoogleAnalyticsAccountSelector = new GoogleAnalyticsAccountSelctor($service);
+$GoogleAnalyticsAccountSelector = new GoogleAnalyticsAccountSelector($service);
 
 if ((isset($_GET['propertyId']) && !empty($_GET['propertyId'])) && (isset($_GET['accountId']) && !empty($_GET['accountId'])) && (isset($_GET['profileId']) && !empty($_GET['profileId'])))
 {
@@ -68,6 +69,9 @@ if ((isset($_GET['propertyId']) && !empty($_GET['propertyId'])) && (isset($_GET[
 }
 else
 {
+	// Accounts listen
+	$GoogleAnalyticsAccountSelector->listAllProfiles();
+	
 	if ($GoogleAnalyticsAccountSelector->hasGoogleAnalyticsAccounts())
 	{
 		echo "Selecteer een account, property en profile: <br />";

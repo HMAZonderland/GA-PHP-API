@@ -46,13 +46,13 @@ class GoogleAnalyticsAccountSelector
 	 */
 	public function listProfiles($propertyId, $accountId)
 	{
-		$list = listManagementProfiles($propertyId, $accountId);	
+		$list = $this->listManagementProfiles($propertyId, $accountId);	
 		
 		/*echo "<pre>";
 		print_r($list);
 		echo "</pre>";*/
 		
-		$accounts = array();
+		$this->_GoogleAnalyticsAccoounts = array();
 		
 		if (sizeof($list['items']) > 0) {
 			
@@ -79,7 +79,7 @@ class GoogleAnalyticsAccountSelector
 				$profile->setName($profileName);
 				
 				// If the account doesn't exists, create it and add the property and the profile right away
-				if (!array_key_exists($accountId, $accounts)) {
+				if (!array_key_exists($accountId, $this->_GoogleAnalyticsAccoounts)) {
 					
 					$property = new Property();
 					$property->setWebPropertyId($webPropertyId);
@@ -90,10 +90,10 @@ class GoogleAnalyticsAccountSelector
 					$GoogleAnalyticsAccount->setAccountId($accountId);
 					$GoogleAnalyticsAccount->addProperty($property);
 					
-					$accounts[''.$accountId.''] = $GoogleAnalyticsAccount;
+					$this->_GoogleAnalyticsAccoounts[''.$accountId.''] = $GoogleAnalyticsAccount;
 				}
 				// Check if the property excists in the specified account array.
-				else if (!array_key_exists($webPropertyId, $accounts[$accountId]->getProperties())) {
+				else if (!array_key_exists($webPropertyId, $this->_GoogleAnalyticsAccoounts[$accountId]->getProperties())) {
 					
 					// The property doesn't exists, lets create it and add the profile to it.
 					$property = new Property();
@@ -102,12 +102,12 @@ class GoogleAnalyticsAccountSelector
 					$property->addProfile($profile);
 					
 					// And add it to the Google Analytics account.
-					$accounts[$accountId]->addProperty($property);
+					$this->_GoogleAnalyticsAccoounts[$accountId]->addProperty($property);
 					
 				} else {
 					
 					// Property exists, lets add the profile to it
-					$properties = $accounts[$accountId]->getProperties();
+					$properties = $this->_GoogleAnalyticsAccoounts[$accountId]->getProperties();
 					$property = $properties[$webPropertyId];
 					$property->addProfile($profile);
 				}
@@ -117,7 +117,6 @@ class GoogleAnalyticsAccountSelector
 			print_r($accounts);
 			echo "</pre>";*/
 		}
-		$this->_GoogleAnalyticsAccoounts = $accounts;
 		return $this->_GoogleAnalyticsAccoounts;	
 	}
 	
