@@ -111,7 +111,7 @@ if ((isset($GoogleAnalyticsAccount)) && (sizeof($GoogleAnalyticsAccount->getProp
 	$from = date('Y-m-d', time()-30*24*60*60); // 30 days
 	$to = date('Y-m-d'); // today
 	
-	$kosten = 14000; // per maand
+	$kosten = 5000; // per maand
 	
 	$calc = new Calculator();
 	$calc->setCosts($kosten);
@@ -121,13 +121,35 @@ if ((isset($GoogleAnalyticsAccount)) && (sizeof($GoogleAnalyticsAccount->getProp
 	{
 		$calc->setRevenue($TransactionRevenueMetrics->getTotalRevenue());
 		$calc->setRatio($source['transactionRevenue'] / $TransactionRevenueMetrics->getTotalRevenue());
+
+		if ($source['source'] == "beslist.nl")
+		{
+			$calc->setSpecificCosts(125); // Clickcosts
+		}
 		
-		echo "<h1>" . $source['source'] . "</h1>";
-		echo "Percentage = " . $calc->getRatioReadable() . "%<br />";
-		echo "Omzet verdeling = &euro;" . $calc->calculateRevenueRatioReadable() . " | &euro;" . $calc->getRevenue() . "<br />";
-		echo "Kosten verdeling = &euro;" . $calc->calculateCostsRatioReadable() . " | 	&euro;" . $calc->getCosts() . "<br />";
-		echo "Winst: &euro;" .  $calc->calculateRatioProfitReadable() . "<br />";
-		echo "Rendement: " . $calc->calulateProfitPercentageReadable() . "%<br />";
-		echo "<br />";
+		if ($source['source'] == "kieskeurig.nl")
+		{
+			$calc->setSpecificCosts(250); // Clickcosts
+		}
+
+		if ($source['source'] != "(direct)")
+		{
+			echo "<h1>" . $source['source'] . "</h1>";
+			echo "Totale omzet = &euro;" . $calc->getRevenue() . "<br />";
+			echo "Omzet " . $source['source'] . " = &euro; " . $source['transactionRevenue'] . "<br />";
+			echo $source['transactionRevenue'] . " / " .$TransactionRevenueMetrics->getTotalRevenue() . " = " . $source['transactionRevenue'] / $TransactionRevenueMetrics->getTotalRevenue() . "%<br />";
+			
+			echo "Percentage = " . $calc->getRatioReadable() . "%<br /><br />";
+			
+			echo "Kosten = &euro;" . $calc->getCosts();
+			echo "Kosten " . $source['source'] . " = &euro;" . $calc->calculateCostsRatioReadable() . " <br />";
+			
+			echo "Winst (omzet - (vaste) kosten): &euro;" .  $calc->calculateRatioProfitReadable() . "<br />";
+			echo "Rendement zonder specifieke kosten: " . $calc->calulateProfitPercentageReadable() . "%<br /><br />";
+			
+			echo "Specifieke kosten = &euro;" . $calc->getSpecificCosts() . "<br />";
+			echo "Winst (omzet - ((vaste) kosten + specifiekekosten): &euro;" .  $calc->calculateRatioSpecificProfitReadable(). "<br />";
+			echo "Rendement met specifieke kosten: " . $calc->calulateProfitSpecificPercentageReadable() . "&";
+		}
 	}
 }

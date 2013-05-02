@@ -2,6 +2,7 @@
 class Calculator
 {	
 	private $_costs;
+	private $_specificCosts;
 	private $_revenue;
 	
 	private $_ratio;
@@ -17,16 +18,32 @@ class Calculator
 	/*
 	 * Sets the costs
 	 */
-	function setCosts($costs)
+	public function setCosts($costs)
 	{
 		$this->_costs = $costs;	
+	}
+	
+	/*
+	 * Gets the specific
+	 */
+	public function getSpecificCosts()
+	{
+		return $this->_specificCosts;
+	}
+	
+	/*
+	 * Sets the costs
+	 */
+	public function setSpecificCosts($specificCosts)
+	{
+		$this->_specificCosts = $specificCosts;	
 	}
 	
 	
 	/*
 	 * Gets the revenue
 	 */
-	function getRevenue()
+	public function getRevenue()
 	{
 		return $this->_revenue;	
 	}
@@ -34,7 +51,7 @@ class Calculator
 	/*
 	 * Sets the revenue
 	 */
-	function setRevenue($revenue)
+	public function setRevenue($revenue)
 	{
 		$this->_revenue = $revenue;	
 	}
@@ -42,7 +59,7 @@ class Calculator
 	/*
 	 * Gets the ratio
 	 */
-	function getRatio()
+	public function getRatio()
 	{
 		return $this->_ratio;	
 	}
@@ -50,7 +67,7 @@ class Calculator
 	/*
 	 * Gets the ratio
 	 */
-	function getRatioReadable()
+	public function getRatioReadable()
 	{
 		return round($this->_ratio * 100, 2);
 	}
@@ -58,7 +75,7 @@ class Calculator
 	/*
 	 * Sets the ratio
 	 */
-	function setRatio($ratio)
+	public function setRatio($ratio)
 	{
 		$this->_ratio = $ratio;	
 	}
@@ -66,15 +83,16 @@ class Calculator
 	/*
 	 * Calculate the ratio of the costs
 	 */
-	function calculateCostsRatio()
+	public function calculateCostsRatio()
 	{
+		echo "</br >" . $this->_costs . " * " . $this->_ratio . " = " . $this->_costs * $this->_ratio . "</br >";
 		return $this->_costs * $this->_ratio;	
 	}
 	
 	/*
 	 * Calculate the ratio of the costs and returns its readable for humans
 	 */
-	function calculateCostsRatioReadable()
+	public function calculateCostsRatioReadable()
 	{
 		return round($this->calculateCostsRatio(), 2);
 	}
@@ -82,15 +100,16 @@ class Calculator
 	/*
 	 * Calculates the ratio of the the revenue
 	 */
-	function calculateRevenueRatio()
+	public function calculateRevenueRatio()
 	{
+		echo "</br >" . $this->_revenue . " * " . $this->_ratio . " = " . $this->_revenue * $this->_ratio . " </br >";
 		return $this->_revenue * $this->_ratio;
 	}
 	
 	/*
 	 * Calculates the ratio of the the revenue readable for humums
 	 */
-	function calculateRevenueRatioReadable()
+	public function calculateRevenueRatioReadable()
 	{
 		return round($this->calculateRevenueRatio(), 2);
 	}
@@ -98,44 +117,97 @@ class Calculator
 	/*
 	 * Calulates profit based upon revenue and costs
 	 */
-	function calculateProfit()
+	public function calculateProfit()
 	{
-		return $this->_revenue - $this->_costs;	
+		echo "</br >" . $this->_revenue . " - " . $this->_costs . " = " . $this->_revenue - $this->_costs . " </br >";
+		return $this->_revenue - $this->_costs;
 	}
 	
 	/*
 	 * Calulates profit based upon ratio, revenue and costs
 	 */
-	function calculateRatioProfit()
+	public function calculateRatioProfit()
 	{
-		return $this->calculateProfit() * $this->_ratio;	
+		echo "</br >(" . $this->_revenue . " - " . $this->_costs . ") * " . $this->_ratio . " = " . ($this->_revenue - $this->_costs)  * $this->_ratio . " </br >";
+		return ($this->_revenue - $this->_costs) * $this->_ratio;	
 	}
+	
+	/*
+	 * Calulates profit based upon ratio, revenue and costs
+	 */
+	public function calculateRatioProfitSpecific()
+	{
+		echo "</br >(" . $this->_revenue . " - (" . $this->_costs . " + " . $this->_specificCosts . ")) * " . $this->_ratio . " = " . ($this->_revenue - ($this->_costs + $this->_specificCosts))  * $this->_ratio . " </br >";
+		return ($this->_revenue - ($this->_costs + $this->_specificCosts)) * $this->_ratio;	
+	}
+
 
 	/*
 	 * Calulates profit based upon ratio, revenue and costs readable for humans
 	 */
-	function calculateRatioProfitReadable()
+	public function calculateRatioProfitReadable()
 	{
 		return round($this->calculateRatioProfit(), 2);
 	}
 	
 	/*
+	 * Calulates profit based upon ratio, revenue and costs readable for humans
+	 */
+	public function calculateRatioSpecificProfitReadable()
+	{
+		return round($this->calculateRatioProfitSpecific(), 2);
+	}
+	
+	/*
 	 * Calulates profit percentage based upon profit and costs
 	 */
-	function calulateProfitPercentage()
+	public function calulateProfitPercentage()
 	{
-		if ($this->_costs * $this->_ratio > 0)
-			return $this->calculateProfit() / ($this->_costs * $this->_ratio);
+		if ($this->_ratio > 0) 
+		{
+			echo "</br >(" . (($this->_revenue - $this->_costs) * $this->_ratio) . ") / " . ($this->_revenue * $this->_ratio) . " = " . ((($this->_revenue - $this->_costs) * $this->_ratio)) / ($this->_revenue * $this->_ratio) . "<br />";
+			return ((($this->_revenue - $this->_costs) * $this->_ratio)) / ($this->_revenue * $this->_ratio);
+		}
 		else
+		{
 			return 0;
+		}
+	}
+	
+	/*
+	 * Calulates profit percentage based upon profit and costs
+	 */
+	public function calulateProfitSpecificPercentage()
+	{
+		if ($this->_ratio > 0) 
+		{
+			echo "</br >(" . (($this->_revenue - $this->_costs) * $this->_ratio) . " - " . $this->_specificCosts . ") / " . ($this->_revenue * $this->_ratio) . " = " . ((($this->_revenue - $this->_costs) * $this->_ratio) - $this->_specificCosts) / ($this->_revenue * $this->_ratio) . "<br />";
+			return ((($this->_revenue - $this->_costs) * $this->_ratio) - $this->_specificCosts) / ($this->_revenue * $this->_ratio);
+		}
+		else
+		{
+			return 0;
+		}
 	}
 	
 	/*
 	 * Calulates profit percentage based upon profit and costs -> human readable version
 	 */
-	function calulateProfitPercentageReadable()
+	public function calulateProfitPercentageReadable()
 	{
 		$profitpercentage = $this->calulateProfitPercentage();
+		if ($profitpercentage == 0)
+		{
+			return $profitpercentage;
+		}
+		return round($profitpercentage * 100, 2);
+	}
+	/*
+	 * Calulates profit percentage based upon profit and costs -> human readable version
+	 */
+	public function calulateProfitSpecificPercentageReadable()
+	{
+		$profitpercentage = $this->calulateProfitSpecificPercentage();
 		if ($profitpercentage == 0)
 		{
 			return $profitpercentage;
