@@ -6,22 +6,25 @@ error_reporting(-1);
 require_once dirname(__FILE__).'/GoogleClientLib/Google_Client.php';
 require_once dirname(__FILE__).'/GoogleClientLib/contrib/Google_AnalyticsService.php';
 require_once dirname(__FILE__).'/classes/GoogleAnalyticsAccount.class.php';
+require_once dirname(__FILE__).'/classes/GoogleAnalyticsMetricsParser.php';
+require_once dirname(__FILE__).'/GoogleAnalyticsMetrics/TransactionRevenueMetrics.php';
 require_once dirname(__FILE__).'/classes/Profile.class.php';
 require_once dirname(__FILE__).'/classes/Property.class.php';
+require_once dirname(__FILE__).'/classes/Calculator.class.php';
+require_once dirname(__FILE__).'/classes/GoogleAnalyticsAccountSelector.php';
 
 $scriptUri = "http://".$_SERVER["HTTP_HOST"].$_SERVER['PHP_SELF'];
 
-$client = new Google_Client();
-$client->setAccessType('online'); // default: offline
-$client->setApplicationName('esser-emerik rendements berekening API');
-$client->setClientId('211121854101.apps.googleusercontent.com');
-$client->setClientSecret('UWMHZxqbyYvbzFrVqSK_45to');
-$client->setRedirectUri($scriptUri);
-$client->setDeveloperKey('AIzaSyAYWJ-TCPgMkE101Jy2OLZXkmyP1-cCsBE'); // API key
+$client = new Google_Client();											// GoogleClient init
+$client->setAccessType('online');										// default: offline
+$client->setApplicationName('esser-emerik rendements berekening API'); 	// Title
+$client->setClientId('211121854101.apps.googleusercontent.com');		// ClientId
+$client->setClientSecret('UWMHZxqbyYvbzFrVqSK_45to');					// ClientSecret
+$client->setRedirectUri($scriptUri);									// Where to redirect to after authentication 
+$client->setDeveloperKey('AIzaSyAYWJ-TCPgMkE101Jy2OLZXkmyP1-cCsBE'); 	// Developer key
 
 // $service implements the client interface, has to be set before auth cal	  
 $service = new Google_AnalyticsService($client);
-$GoogleAnalyticsAccount = null;
 
 if (isset($_GET['logout'])) { // logout: destroy token
     unset($_SESSION['token']);
@@ -44,109 +47,20 @@ if (!$client->getAccessToken()) { // auth call to google
     die;
 }
 
-// Stap 1, account kiezen.
-
-// Stap 2, property kiezen.
-
-// Stap 3, profiel kiezen.
-
-function listManagementProfiles($service, $propertyId, $accountId)
-{
-	//echo "VARS: " . $propertyId . " " . $accountId;
-	return $service->management_profiles->listManagementProfiles($accountId, $propertyId);
-}
-
-function ListAccounts($service, $propertyId, $accountId)
-{
-	$list = listManagementProfiles($service, $propertyId, $accountId);	
-	
-	/*echo "<pre>";
-	print_r($list);
-	echo "</pre>";*/
-	
-	$accounts = array();
-	
-	if (sizeof($list['items']) > 0) {
-		
-		foreach ($list['items'] as $item) {	
-	
-			/*echo "<pre>";
-			print_r($item);
-			echo "</pre>";*/
-		
-			// GoogleAnalyticsAccount
-			$accountId = $item['accountId'];
-			//$googleanalayticsaccountName = $profile['http://magento.presteren.nu'];
-			
-			// Property
-			$propertyName = $item['websiteUrl'];
-			$webPropertyId = $item['webPropertyId'];
-			
-			// Profile
-			$profileId = $item['id'];
-			$profileName = $item['name'];
-			
-			// Profile always gets created
-			$profile = new Profile();
-			$profile->setProfileId($profileId);
-			$profile->setName($profileName);
-			
-			// If the account doesn't exists, create it and add the property and the profile right away
-			if (!array_key_exists($accountId, $accounts)) {
-				
-				$property = new Property();
-				$property->setWebPropertyId($webPropertyId);
-				$property->setName($propertyName);
-				$property->addProfile($profile);
-				
-				$GoogleAnalyticsAccount = new GoogleAnalyticsAccount();
-				$GoogleAnalyticsAccount->setAccountId($accountId);
-				$GoogleAnalyticsAccount->addProperty($property);
-				
-				$accounts[''.$accountId.''] = $GoogleAnalyticsAccount;
-			}
-			// Check if the property excists in the specified account array.
-			else if (!array_key_exists($webPropertyId, $accounts[$accountId]->getProperties())) {
-				
-				//echo $webPropertyId . "<br />";
-				
-				// The property doesn't exists, lets create it and add the profile to it.
-				$property = new Property();
-				$property->setWebPropertyId($webPropertyId);
-				$property->setName($propertyName);
-				$property->addProfile($profile);
-				
-				// And add it to the Google Analytics account.
-				$accounts[$accountId]->addProperty($property);
-				
-			} else {
-				
-				//echo $profileId . "<br />";
-				
-				// Property exists, lets add the profile to it
-				$properties = $accounts[$accountId]->getProperties();
-				$property = $properties[$webPropertyId];
-				$property->addProfile($profile);
-				//$properties[$webPropertyId]->addProfile($profile);
-			}
-		}
-		
-		/*echo "<pre>";
-		print_r($accounts);
-		echo "</pre>";*/
-	}
-	return $accounts;
-}
+$GoogleAnalyticsAccountSelector = new GoogleAnalyticsAccountSelector($service);
 
 if ((isset($_GET['propertyId']) && !empty($_GET['propertyId'])) && (isset($_GET['accountId']) && !empty($_GET['accountId'])) && (isset($_GET['profileId']) && !empty($_GET['profileId'])))
 {
+	// Parse the $_GET vars
 	$propertyId = $_GET['propertyId'];
 	$accountId = $_GET['accountId'];
 	$profileId = $_GET['profileId'];
 	
-	$GoogleAnalyticsAccountList = ListAccounts($service, $propertyId, $accountId);
-	reset($GoogleAnalyticsAccountList);
+	// Gets the list of profiles attached to the account
+	$GoogleAnalyticsAccountList = $GoogleAnalyticsAccountSelector->listProfiles($propertyId, $accountId);
 	
+	// Since we have a propertyId and accountId we know that there is only 1 account, so we can take the first object
+	// from the array and use it as object.
 	$GoogleAnalyticsAccount = $GoogleAnalyticsAccountList[key($GoogleAnalyticsAccountList)];
 		
 	/*echo "<pre>";
@@ -155,13 +69,14 @@ if ((isset($_GET['propertyId']) && !empty($_GET['propertyId'])) && (isset($_GET[
 }
 else
 {
-	$accounts = ListAccounts($service, "~all", "~all");
+	// Accounts listen
+	$GoogleAnalyticsAccountSelector->listAllProfiles();
 	
-	if (sizeof($accounts) > 0)
+	if ($GoogleAnalyticsAccountSelector->hasGoogleAnalyticsAccounts())
 	{
 		echo "Selecteer een account, property en profile: <br />";
 				
-		foreach ($accounts as $account)
+		foreach ($GoogleAnalyticsAccountSelector->getGoogleAnalyticsAccounts() as $account)
 		{
 			$properties = $account->getProperties();
 			
@@ -192,75 +107,49 @@ else
 
 if ((isset($GoogleAnalyticsAccount)) && (sizeof($GoogleAnalyticsAccount->getProperties() > 0)) && $GoogleAnalyticsAccount != null)
 { 
-
-	$results = array();
-	$set = array();
-
-	$properties = $GoogleAnalyticsAccount->getProperties();
+	// Tijd filter
+	$from = date('Y-m-d', time()-30*24*60*60); // 30 days
+	$to = date('Y-m-d'); // today
 	
-	foreach ($properties as $property)
+	$kosten = 5000; // per maand
+	
+	$calc = new Calculator();
+	$calc->setCosts($kosten);
+	
+	$TransactionRevenueMetrics = new TransactionRevenueMetrics($service, $_GET['profileId'], $from, $to);
+	foreach ($TransactionRevenueMetrics->getRevenuePerSource() as $source)
 	{
-		if (sizeof($property->getProfiles() > 0))
+		$calc->setRevenue($TransactionRevenueMetrics->getTotalRevenue());
+		$calc->setRatio($source['transactionRevenue'] / $TransactionRevenueMetrics->getTotalRevenue());
+
+		if ($source['source'] == "beslist.nl")
 		{
-			$profiles = $property->getProfiles();
-			foreach ($profiles as $profile)
-			{
-				echo "==============================[ ".$profile->getProfileId()." ]==============================";
-				
-				// Benamingen
-				// metrics
-				$_params[] = 'Bron';
-				$_params[] = 'Medium';
-				$_params[] = 'bezoekers';
-				$_params[] = 'opbrengst per transactie';
-				// dimensions
-				$_params[] = 'transacties';
-				$_params[] = 'unieke aankopen';
-				
-				// Tijd filter
-				$from = date('Y-m-d', time()-2*24*60*60); // 2 days
-				$to = date('Y-m-d'); // today
-				
-				// metrics + dimensions uit de documentenatie :
-				// https://developers.google.com/analytics/devguides/reporting/core/dimsmets
-				$dimensions = 'ga:source,ga:medium';
-				$metrics = 'ga:visits,ga:transactionRevenue,ga:transactions,ga:uniquePurchases';
-				
-				// Ophalen
-				$data = $service->data_ga->get('ga:'.$profile->getProfileId(), $from, $to, $metrics, array('dimensions' => $dimensions));
-				
-				if (isset($data['rows']) && sizeof($data['rows']) > 0) 
-				{
-					foreach($data['rows'] as $row) 
-					{
-                        $key = $row[0];
-						$set["$key"]['medium'] = $row[1];
-						$set[$key]['visits'] = $row[2];
-						$set[$key]['transactionRevenue'] = $row[3];
-						$set[$key]['transactions'] = $row[4];
-						$set[$key]['uniquePurchases'] = $row[5];
-						array_push($results, $set[$key]);
-					}
-					$set['totalsForAllResults']['medium'] = "totals";
-					$set['totalsForAllResults']['visits'] = $data['totalsForAllResults']['ga:visits'];
-					$set['totalsForAllResults']['transactionRevenue'] = $data['totalsForAllResults']['ga:transactionRevenue'];
-					$set['totalsForAllResults']['transactions'] = $data['totalsForAllResults']['ga:transactions'];
-					$set['totalsForAllResults']['uniquePurchases'] = $data['totalsForAllResults']['ga:uniquePurchases'];
-					array_push($results, $set['totalsForAllResults']);
-					
-					echo "<pre>";
-					print_r($results);
-					echo "</pre>";
-				} 
-				else
-				{
-					echo "<br />Geen data.<br />";
-				}
-				/*echo "<br />==============================[ DEBUG ]==============================";
-				echo "<pre>";
-				print_r($data);
-				echo "</pre>";*/
-			}
+			$calc->setSpecificCosts(125); // Clickcosts
+		}
+		
+		if ($source['source'] == "kieskeurig.nl")
+		{
+			$calc->setSpecificCosts(250); // Clickcosts
+		}
+
+		if ($source['source'] != "(direct)")
+		{
+			echo "<h1>" . $source['source'] . "</h1>";
+			echo "Totale omzet = &euro;" . $calc->getRevenue() . "<br />";
+			echo "Omzet " . $source['source'] . " = &euro; " . $source['transactionRevenue'] . "<br />";
+			echo $source['transactionRevenue'] . " / " .$TransactionRevenueMetrics->getTotalRevenue() . " = " . $source['transactionRevenue'] / $TransactionRevenueMetrics->getTotalRevenue() . "%<br />";
+			
+			echo "Percentage = " . $calc->getRatioReadable() . "%<br /><br />";
+			
+			echo "Kosten = &euro;" . $calc->getCosts();
+			echo "Kosten " . $source['source'] . " = &euro;" . $calc->calculateCostsRatioReadable() . " <br />";
+			
+			echo "Winst (omzet - (vaste) kosten): &euro;" .  $calc->calculateRatioProfitReadable() . "<br />";
+			echo "Rendement zonder specifieke kosten: " . $calc->calulateProfitPercentageReadable() . "%<br /><br />";
+			
+			echo "Specifieke kosten = &euro;" . $calc->getSpecificCosts() . "<br />";
+			echo "Winst (omzet - ((vaste) kosten + specifiekekosten): &euro;" .  $calc->calculateRatioSpecificProfitReadable(). "<br />";
+			echo "Rendement met specifieke kosten: " . $calc->calulateProfitSpecificPercentageReadable() . "&";
 		}
 	}
 }

@@ -11,42 +11,42 @@ class GoogleAnalyticsAccount {
 	/*
 	 * Default constructor
 	 */
-	function __constructor($accountId) {
+	public function __constructor($accountId) {
 		$this->_accountId = $accountId;
 	}
 	
 	/*
 	 * Sets the accountId
 	 */
-	function setAccountId($accountId) {
+	public function setAccountId($accountId) {
 		$this->_accountId = $accountId;
 	}
 	
 	/*
 	 * Gets acountId
 	 */
-	function getAccountId() {
+	public function getAccountId() {
 		return $this->_accountId;
 	}
 	
 	/*
 	 * Sets name
 	 */
-	function setName($name) {
+	public function setName($name) {
 		$this->_name = $name;	
 	}
 	
 	/*
 	 * Sets name
 	 */
-	function getName() {
+	public function getName() {
 		return $this->_name;	
 	}
 	
 	/*
 	 * Sets Properties
 	 */
-	function setProperties(array $properties) {
+	public function setProperties(array $properties) {
 		$this->_properties = $properties;	
 	}
 	
@@ -54,14 +54,14 @@ class GoogleAnalyticsAccount {
 	/*
 	 * Gets Properties
 	 */
-	function getProperties() {
+	public function getProperties() {
 		return $this->_properties;	
 	}
 	
 	/*
 	 * Adds Property object to array
 	 */
-	function addProperty(Property $webproperty) {
+	public function addProperty(Property $webproperty) {
 		$this->_properties[''.$webproperty->getWebPropertyId().''] = $webproperty;	
 	}
 }
