@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+//testje
 error_reporting(-1);
 
 require_once dirname(__FILE__).'/GoogleClientLib/Google_Client.php';
