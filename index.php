@@ -14,17 +14,16 @@ require_once dirname(__FILE__).'/classes/Calculator.class.php';
 
 $scriptUri = "http://".$_SERVER["HTTP_HOST"].$_SERVER['PHP_SELF'];
 
-$client = new Google_Client();
-$client->setAccessType('online'); // default: offline
-$client->setApplicationName('esser-emerik rendements berekening API');
-$client->setClientId('211121854101.apps.googleusercontent.com');
-$client->setClientSecret('UWMHZxqbyYvbzFrVqSK_45to');
-$client->setRedirectUri($scriptUri);
-$client->setDeveloperKey('AIzaSyAYWJ-TCPgMkE101Jy2OLZXkmyP1-cCsBE'); // API key
+$client = new Google_Client();											// GoogleClient init
+$client->setAccessType('online');										// default: offline
+$client->setApplicationName('esser-emerik rendements berekening API'); 	// Title
+$client->setClientId('211121854101.apps.googleusercontent.com');		// ClientId
+$client->setClientSecret('UWMHZxqbyYvbzFrVqSK_45to');					// ClientSecret
+$client->setRedirectUri($scriptUri);									// Where to redirect to after authentication 
+$client->setDeveloperKey('AIzaSyAYWJ-TCPgMkE101Jy2OLZXkmyP1-cCsBE'); 	// Developer key
 
 // $service implements the client interface, has to be set before auth cal	  
 $service = new Google_AnalyticsService($client);
-$GoogleAnalyticsAccount = null;
 
 if (isset($_GET['logout'])) { // logout: destroy token
     unset($_SESSION['token']);
@@ -47,109 +46,20 @@ if (!$client->getAccessToken()) { // auth call to google
     die;
 }
 
-// Stap 1, account kiezen.
-
-// Stap 2, property kiezen.
-
-// Stap 3, profiel kiezen.
-
-function listManagementProfiles($service, $propertyId, $accountId)
-{
-	//echo "VARS: " . $propertyId . " " . $accountId;
-	return $service->management_profiles->listManagementProfiles($accountId, $propertyId);
-}
-
-function ListAccounts($service, $propertyId, $accountId)
-{
-	$list = listManagementProfiles($service, $propertyId, $accountId);	
-	
-	/*echo "<pre>";
-	print_r($list);
-	echo "</pre>";*/
-	
-	$accounts = array();
-	
-	if (sizeof($list['items']) > 0) {
-		
-		foreach ($list['items'] as $item) {	
-	
-			/*echo "<pre>";
-			print_r($item);
-			echo "</pre>";*/
-		
-			// GoogleAnalyticsAccount
-			$accountId = $item['accountId'];
-			//$googleanalayticsaccountName = $profile['http://magento.presteren.nu'];
-			
-			// Property
-			$propertyName = $item['websiteUrl'];
-			$webPropertyId = $item['webPropertyId'];
-			
-			// Profile
-			$profileId = $item['id'];
-			$profileName = $item['name'];
-			
-			// Profile always gets created
-			$profile = new Profile();
-			$profile->setProfileId($profileId);
-			$profile->setName($profileName);
-			
-			// If the account doesn't exists, create it and add the property and the profile right away
-			if (!array_key_exists($accountId, $accounts)) {
-				
-				$property = new Property();
-				$property->setWebPropertyId($webPropertyId);
-				$property->setName($propertyName);
-				$property->addProfile($profile);
-				
-				$GoogleAnalyticsAccount = new GoogleAnalyticsAccount();
-				$GoogleAnalyticsAccount->setAccountId($accountId);
-				$GoogleAnalyticsAccount->addProperty($property);
-				
-				$accounts[''.$accountId.''] = $GoogleAnalyticsAccount;
-			}
-			// Check if the property excists in the specified account array.
-			else if (!array_key_exists($webPropertyId, $accounts[$accountId]->getProperties())) {
-				
-				//echo $webPropertyId . "<br />";
-				
-				// The property doesn't exists, lets create it and add the profile to it.
-				$property = new Property();
-				$property->setWebPropertyId($webPropertyId);
-				$property->setName($propertyName);
-				$property->addProfile($profile);
-				
-				// And add it to the Google Analytics account.
-				$accounts[$accountId]->addProperty($property);
-				
-			} else {
-				
-				//echo $profileId . "<br />";
-				
-				// Property exists, lets add the profile to it
-				$properties = $accounts[$accountId]->getProperties();
-				$property = $properties[$webPropertyId];
-				$property->addProfile($profile);
-				//$properties[$webPropertyId]->addProfile($profile);
-			}
-		}
-		
-		/*echo "<pre>";
-		print_r($accounts);
-		echo "</pre>";*/
-	}
-	return $accounts;
-}
+$GoogleAnalyticsAccountSelector = new GoogleAnalyticsAccountSelctor($service);
 
 if ((isset($_GET['propertyId']) && !empty($_GET['propertyId'])) && (isset($_GET['accountId']) && !empty($_GET['accountId'])) && (isset($_GET['profileId']) && !empty($_GET['profileId'])))
 {
+	// Parse the $_GET vars
 	$propertyId = $_GET['propertyId'];
 	$accountId = $_GET['accountId'];
 	$profileId = $_GET['profileId'];
 	
-	$GoogleAnalyticsAccountList = ListAccounts($service, $propertyId, $accountId);
-	reset($GoogleAnalyticsAccountList);
+	// Gets the list of profiles attached to the account
+	$GoogleAnalyticsAccountList = $GoogleAnalyticsAccountSelector->listProfiles($propertyId, $accountId);
 	
+	// Since we have a propertyId and accountId we know that there is only 1 account, so we can take the first object
+	// from the array and use it as object.
 	$GoogleAnalyticsAccount = $GoogleAnalyticsAccountList[key($GoogleAnalyticsAccountList)];
 		
 	/*echo "<pre>";
@@ -158,13 +68,11 @@ if ((isset($_GET['propertyId']) && !empty($_GET['propertyId'])) && (isset($_GET[
 }
 else
 {
-	$accounts = ListAccounts($service, "~all", "~all");
-	
-	if (sizeof($accounts) > 0)
+	if ($GoogleAnalyticsAccountSelector->hasGoogleAnalyticsAccounts())
 	{
 		echo "Selecteer een account, property en profile: <br />";
 				
-		foreach ($accounts as $account)
+		foreach ($GoogleAnalyticsAccountSelector->getGoogleAnalyticsAccounts() as $account)
 		{
 			$properties = $account->getProperties();
 			
