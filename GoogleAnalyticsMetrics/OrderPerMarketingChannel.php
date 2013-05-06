@@ -20,15 +20,17 @@ class OrderPerMarketingChannel extends GoogleAnalyticsMetricsParser
     public function __construct(Google_AnalyticsService $service, $profileId, $from, $to)
     {
         // dimensions
-        $dimensions = 'ga:source,ga:transactionId';
+        $dimensions = 'ga:source,ga:transactionId,ga:productSku';
         $this->_params[] = 'source';
         $this->_params[] = 'transactionId';
+        $this->_params[] = 'productSku';
 
         // metrics
-        $metrics = 'ga:transactionRevenue,ga:transactionShipping,ga:transactionTax';
-        $this->_params[] = 'transactionRevenue';
-        $this->_params[] = 'transactionShipping';
-        $this->_params[] = 'transactionTax';
+        $metrics = "ga:itemQuantity,ga:itemRevenue";
+        //$metrics = 'ga:transactionRevenue,ga:transactionShipping,ga:transactionTax';
+        $this->_params[] = 'itemQuantity';
+        $this->_params[] = 'itemRevenue';
+        //->_params[] = 'transactionTax';
 
         parent::__construct($metrics, $dimensions, $service, $profileId, $from, $to);
         $this->parse();
@@ -48,36 +50,45 @@ class OrderPerMarketingChannel extends GoogleAnalyticsMetricsParser
     public function getOrdersPerChannel()
     {
 
-        // kanaal => orderId => ordervars
-        $tst = array();
-        $rtn = array();
-
+        $result = array();
         $source = null;
         $transactionId = null;
 
         foreach ($this->_results as $row) {
 
-            if (isset($source) && strlen($source) > 0) {
-                $rtn[$source][$transactionId] = $tst;
-            }
-
-            $source = "";
-            $transactionId = "";
-            $tst = array();
-
             foreach ($row as $key => $value) {
+
+                //echo "processing key: " . $key . " value " . $value . "<br />";
+
                 if ($key == 'source') {
                     $source = $value;
+                    if (!isset($result[$source])) {
+                        $result[$source] = array();
+                    }
                 } elseif ($key == 'transactionId') {
                     $transactionId = $value;
+                    if (!isset($result[$source][$transactionId])) {
+                        $result[$source][$transactionId] = array();
+                    }
+                } elseif ($key == 'productSku') {
+                    $productSku = $value;
+                    if (!isset($result[$source][$transactionId][$productSku])) {
+                        $result[$source][$transactionId][$productSku] = array();
+                    }
+                    $result[$source][$transactionId][$productSku]['productSku'] = $value;
+                } elseif ($key == 'itemRevenue') {
+                    $result[$source][$transactionId][$productSku]['itemRevenue'] = $value;
                 } else {
-                    $tst[$key] = $value;
+                    $result[$source][$transactionId][$productSku]['itemQuantity'] = $value;
                 }
             }
         }
 
-        echo "<pre>";
-        print_r($rtn);
-        echo "</pre>";
+        //echo "<pre>";
+        //print_r($result);
+        //print_r($this->_results);
+        //echo "</pre>";
+
+        return $result;
     }
 }

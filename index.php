@@ -108,7 +108,7 @@ if ((isset($GoogleAnalyticsAccount)) && (sizeof($GoogleAnalyticsAccount->getProp
     //$OrderPerMarketingChannel = new OrderPerMarketingChannel($service, $_GET['profileId'], $from, $to);
     //$OrderPerMarketingChannel->getOrdersPerChannel();
     //$ProductRevenueMetrics = new ProductRevenueMetrics($service, $_GET['profileId'], $from, $to);
-    $TransactionRevenueMetrics = new TransactionRevenueMetrics($service, $_GET['profileId'], $from, $to);
+    /*$TransactionRevenueMetrics = new TransactionRevenueMetrics($service, $_GET['profileId'], $from, $to);
 
     $kosten = 5000; // per maand
 
@@ -122,37 +122,41 @@ if ((isset($GoogleAnalyticsAccount)) && (sizeof($GoogleAnalyticsAccount->getProp
 
         $clickCosts = 0;
 
-        if ($source['source'] == "beslist.nl") {
-            $clickCosts = 125;
+        if ($source['source'] == "beslist.nl" || $source['source'] == "kieskeurig.nl" || $source['source'] == "beslistslimmershoppen")
+        {
+
+            if ($source['source'] == "beslist.nl") {
+                $clickCosts = 125;
+            }
+
+            if ($source['source'] == "kieskeurig.nl") {
+                $clickCosts = 250;
+            }
+
+            $specificCosts = $source['transactionTax'] + $source['transactionShipping'] + $clickCosts;
+            $calc->setSpecificCosts($specificCosts);
+
+            if ($source['source'] != "(direct)") {
+                echo "<h1>" . $source['source'] . "</h1>";
+                echo "Totale omzet = &euro;" . $calc->getRevenue() . "<br />";
+                echo "Omzet " . $source['source'] . " = &euro; " . $source['transactionRevenue'] . "<br />";
+                echo $source['transactionRevenue'] . " / " . $TransactionRevenueMetrics->getTotalRevenue() . " = " . $source['transactionRevenue'] / $TransactionRevenueMetrics->getTotalRevenue() . "%<br />";
+
+                echo "Percentage = " . $calc->getRatioReadable() . "%<br /><br />";
+
+                echo "Kosten = &euro;" . $calc->getCosts();
+                echo "Kosten " . $source['source'] . " = &euro;" . $calc->calculateCostsRatioReadable() . " <br />";
+
+                echo "Winst (omzet - (vaste) kosten): &euro;" . $calc->calculateRatioProfitReadable() . "<br />";
+                echo "Rendement zonder specifieke kosten: " . $calc->calculateProfitPercentageReadable() . "%<br /><br />";
+
+                echo "Klikkosten = &euro;" . $clickCosts . "<br />";
+                echo "Belasting = &euro;" . $source['transactionTax'] . "<br />";
+                echo "Verzendkosten = &euro;" . $source['transactionShipping'] . "<br />";
+                echo "Specifieke kosten (klik, belasting + verzend) = &euro;" . $calc->getSpecificCosts() . "<br />";
+                echo "Winst (omzet - ((vaste) kosten + specifiekekosten): &euro;" . $calc->calculateRatioSpecificProfitReadable() . "<br />";
+                echo "Rendement met specifieke kosten: " . $calc->calculateProfitSpecificPercentageReadable() . "%";
+            }
         }
-
-        if ($source['source'] == "kieskeurig.nl") {
-            $clickCosts = 250;
-        }
-
-        $specificCosts = $source['transactionTax'] + $source['transactionShipping'] + $clickCosts;
-        $calc->setSpecificCosts($specificCosts);
-
-        if ($source['source'] != "(direct)") {
-            echo "<h1>" . $source['source'] . "</h1>";
-            echo "Totale omzet = &euro;" . $calc->getRevenue() . "<br />";
-            echo "Omzet " . $source['source'] . " = &euro; " . $source['transactionRevenue'] . "<br />";
-            echo $source['transactionRevenue'] . " / " . $TransactionRevenueMetrics->getTotalRevenue() . " = " . $source['transactionRevenue'] / $TransactionRevenueMetrics->getTotalRevenue() . "%<br />";
-
-            echo "Percentage = " . $calc->getRatioReadable() . "%<br /><br />";
-
-            echo "Kosten = &euro;" . $calc->getCosts();
-            echo "Kosten " . $source['source'] . " = &euro;" . $calc->calculateCostsRatioReadable() . " <br />";
-
-            echo "Winst (omzet - (vaste) kosten): &euro;" . $calc->calculateRatioProfitReadable() . "<br />";
-            echo "Rendement zonder specifieke kosten: " . $calc->calculateProfitPercentageReadable() . "%<br /><br />";
-
-            echo "Klikkosten = &euro;" . $clickCosts . "<br />";
-            echo "Belasting = &euro;" . $source['transactionTax'] . "<br />";
-            echo "Verzendkosten = &euro;" . $source['transactionShipping'] . "<br />";
-            echo "Specifieke kosten (klik, belasting + verzend) = &euro;" . $calc->getSpecificCosts() . "<br />";
-            echo "Winst (omzet - ((vaste) kosten + specifiekekosten): &euro;" . $calc->calculateRatioSpecificProfitReadable() . "<br />";
-            echo "Rendement met specifieke kosten: " . $calc->calculateProfitSpecificPercentageReadable() . "%";
-        }
-    }
+    }*/
 }
