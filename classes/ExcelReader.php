@@ -25,8 +25,8 @@ set_include_path(get_include_path() . PATH_SEPARATOR . '../../../Classes/');
 /** PHPExcel_IOFactory */
 require_once dirname(__FILE__).'/PhpExcel/PHPExcel/IOFactory.php';
 
+$inputFileName = file_get_contents('http://cl.beslist.nl/shop/stats/beslist_statistieken.xls/?startdate=01-05-2013&enddate=01-05-2013&accepted=1&shop_id=13683');
 
-$inputFileName = 'http://cl.beslist.nl/shop/stats/beslist_statistieken.xls/?startdate=01-05-2013&enddate=01-05-2013&accepted=1&shop_id=13683';
 echo 'Loading file ',pathinfo($inputFileName,PATHINFO_BASENAME),' using IOFactory to identify the format<br />';
 $objPHPExcel = PHPExcel_IOFactory::load($inputFileName);
 
@@ -35,7 +35,6 @@ echo '<hr />';
 
 $sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
 var_dump($sheetData);
-
 
 ?>
 <body>

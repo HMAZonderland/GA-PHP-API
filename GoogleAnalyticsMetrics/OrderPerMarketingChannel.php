@@ -49,7 +49,6 @@ class OrderPerMarketingChannel extends GoogleAnalyticsMetricsParser
      */
     public function getOrdersPerChannel()
     {
-
         $result = array();
         $source = null;
         $transactionId = null;

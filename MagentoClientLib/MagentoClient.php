@@ -83,10 +83,54 @@ class MagentoClient
     }
 
     public function getProductInfo($sku){
-
-        return $this->_call('catalog_product.info', $sku);
+        //return $this->_call('catalog_product.info', $sku);
+        try{
+            return $this->_call('catalog_product.info', $sku);
+        }
+        catch(SoapFaultException $e){
+        }
+        catch (Exception $e) {
+        }
     }
+
     public function getProductList(){
         return $this->_call('catalog_product.list', '');
+    }
+
+    public function getProductProfit($sku){
+       $product = $this->getProductInfo((string) $sku);
+       echo $product['price'] . ' - ' . $product['cost'] . " ";
+       return $product['price'] - $product['cost'];
+    }
+
+    public function getSalesOrderDetails($salesOrderId) {
+        return $this->_call('sales_order.info', $salesOrderId);
+    }
+
+    public function getSalesOrderDetailsItems($salesOrderId) {
+        $data = $this->getSalesOrderDetails($salesOrderId);
+        return $data['items'];
+    }
+
+    public function getSalesOrderDetailsItemsSku($salesOrderId) {
+        $skus = array();
+        $items = $this->getSalesOrderDetailsItems($salesOrderId);
+        foreach ($items as $item) {
+            array_push($skus, $item['sku']);
+        }
+        return $skus;
+    }
+
+    public function getSalesOrderProfit($salesOrderId) {
+        $profit = 0;
+        $items = $this->getSalesOrderDetailsItems($salesOrderId);
+
+        foreach ($items as $item) {
+            if ($item['base_cost'] > 0) {
+                $profit += $item['price'] - $item['base_cost'];
+            }
+        }
+
+        return $profit;
     }
 }
