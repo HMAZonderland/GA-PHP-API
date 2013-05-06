@@ -76,9 +76,17 @@ class MagentoClient
      */
     private function _call($method, $arg)
     {
-        if (isset($arg) && strlen($arg) > 0) {
+        if (isset($arg) && !strlen($arg) > 0) {
             return $this->_client->call($this->_session, $method);
         }
         return $this->_client->call($this->_session, $method, $arg);
+    }
+
+    public function getProductInfo($sku){
+
+        return $this->_call('catalog_product.info', $sku);
+    }
+    public function getProductList(){
+        return $this->_call('catalog_product.list', '');
     }
 }

@@ -15,7 +15,8 @@ $host = 'http://magento.presteren.nu/api/soap/?wsdl';
 
 $client = new MagentoClient($apiUser, $apiKey, $host);
 $client->connect();
-$data = (array)$client->getOrders();
+$data = (array)$client->getProductInfo('n2610');
+//$data = (array)$client->getProductList();
 
 print "<pre>";
 print_r($data);
