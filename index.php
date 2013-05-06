@@ -8,11 +8,13 @@ require_once dirname(__FILE__) . '/GoogleClientLib/contrib/Google_AnalyticsServi
 require_once dirname(__FILE__) . '/classes/GoogleAnalyticsAccount.class.php';
 require_once dirname(__FILE__) . '/classes/GoogleAnalyticsMetricsParser.php';
 require_once dirname(__FILE__) . '/GoogleAnalyticsMetrics/TransactionRevenueMetrics.php';
+require_once dirname(__FILE__) . '/GoogleAnalyticsMetrics/ProductRevenueMetrics.php';
 require_once dirname(__FILE__) . '/classes/Profile.class.php';
 require_once dirname(__FILE__) . '/classes/Property.class.php';
 require_once dirname(__FILE__) . '/classes/Calculator.class.php';
 require_once dirname(__FILE__) . '/classes/GoogleAnalyticsAccountSelector.php';
-require_once dirname(__FILE__) . '/classes/ExcelReader.php';
+require_once dirname(__FILE__) . '/GoogleAnalyticsMetrics/OrderPerMarketingChannel.php';
+//require_once dirname(__FILE__) . '/classes/ExcelReader.php';
 
 $scriptUri = "http://" . $_SERVER["HTTP_HOST"] . $_SERVER['PHP_SELF'];
 
@@ -71,6 +73,7 @@ if ((isset($_GET['propertyId']) && !empty($_GET['propertyId'])) && (isset($_GET[
     $GoogleAnalyticsAccountSelector->listAllProfiles();
 
     if ($GoogleAnalyticsAccountSelector->hasGoogleAnalyticsAccounts()) {
+
         echo "Selecteer een account, property en profile: <br />";
 
         foreach ($GoogleAnalyticsAccountSelector->getGoogleAnalyticsAccounts() as $account) {
@@ -102,23 +105,33 @@ if ((isset($GoogleAnalyticsAccount)) && (sizeof($GoogleAnalyticsAccount->getProp
     $from = date('Y-m-d', time() - 30 * 24 * 60 * 60); // 30 days
     $to = date('Y-m-d'); // today
 
+    //$OrderPerMarketingChannel = new OrderPerMarketingChannel($service, $_GET['profileId'], $from, $to);
+    //$OrderPerMarketingChannel->getOrdersPerChannel();
+    //$ProductRevenueMetrics = new ProductRevenueMetrics($service, $_GET['profileId'], $from, $to);
+    $TransactionRevenueMetrics = new TransactionRevenueMetrics($service, $_GET['profileId'], $from, $to);
+
     $kosten = 5000; // per maand
 
     $calc = new Calculator();
     $calc->setCosts($kosten);
 
-    $TransactionRevenueMetrics = new TransactionRevenueMetrics($service, $_GET['profileId'], $from, $to);
     foreach ($TransactionRevenueMetrics->getRevenuePerSource() as $source) {
+
         $calc->setRevenue($TransactionRevenueMetrics->getTotalRevenue());
         $calc->setRatio($source['transactionRevenue'] / $TransactionRevenueMetrics->getTotalRevenue());
 
+        $clickCosts = 0;
+
         if ($source['source'] == "beslist.nl") {
-            $calc->setSpecificCosts(125); // Clickcosts
+            $clickCosts = 125;
         }
 
         if ($source['source'] == "kieskeurig.nl") {
-            $calc->setSpecificCosts(250); // Clickcosts
+            $clickCosts = 250;
         }
+
+        $specificCosts = $source['transactionTax'] + $source['transactionShipping'] + $clickCosts;
+        $calc->setSpecificCosts($specificCosts);
 
         if ($source['source'] != "(direct)") {
             echo "<h1>" . $source['source'] . "</h1>";
@@ -134,9 +147,12 @@ if ((isset($GoogleAnalyticsAccount)) && (sizeof($GoogleAnalyticsAccount->getProp
             echo "Winst (omzet - (vaste) kosten): &euro;" . $calc->calculateRatioProfitReadable() . "<br />";
             echo "Rendement zonder specifieke kosten: " . $calc->calculateProfitPercentageReadable() . "%<br /><br />";
 
-            echo "Specifieke kosten = &euro;" . $calc->getSpecificCosts() . "<br />";
+            echo "Klikkosten = &euro;" . $clickCosts . "<br />";
+            echo "Belasting = &euro;" . $source['transactionTax'] . "<br />";
+            echo "Verzendkosten = &euro;" . $source['transactionShipping'] . "<br />";
+            echo "Specifieke kosten (klik, belasting + verzend) = &euro;" . $calc->getSpecificCosts() . "<br />";
             echo "Winst (omzet - ((vaste) kosten + specifiekekosten): &euro;" . $calc->calculateRatioSpecificProfitReadable() . "<br />";
-            echo "Rendement met specifieke kosten: " . $calc->calculateProfitSpecificPercentageReadable() . "&";
+            echo "Rendement met specifieke kosten: " . $calc->calculateProfitSpecificPercentageReadable() . "%";
         }
     }
 }

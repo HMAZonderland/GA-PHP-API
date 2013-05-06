@@ -23,7 +23,7 @@ class TransactionRevenueMetrics extends GoogleAnalyticsMetricsParser
      * @param Google_AnalyticsService $from
      * @param $to
      */
-    function __construct(Google_AnalyticsService $service, $profileId, $from, $to)
+    public function __construct(Google_AnalyticsService $service, $profileId, $from, $to)
     {
         // dimensions
         $dimensions = 'ga:source,ga:medium';
@@ -31,11 +31,13 @@ class TransactionRevenueMetrics extends GoogleAnalyticsMetricsParser
         $this->_params[] = 'medium';
 
         // metrics
-        $metrics = 'ga:visits,ga:transactionRevenue,ga:transactions,ga:uniquePurchases';
+        $metrics = 'ga:visits,ga:transactionRevenue,ga:transactions,ga:uniquePurchases,ga:transactionShipping,ga:transactionTax';
         $this->_params[] = 'visits';
         $this->_params[] = 'transactionRevenue';
         $this->_params[] = 'transactions';
         $this->_params[] = 'uniquePurchases';
+        $this->_params[] = 'transactionShipping';
+        $this->_params[] = 'transactionTax';
 
         parent::__construct($metrics, $dimensions, $service, $profileId, $from, $to);
         $this->parse();
@@ -44,7 +46,7 @@ class TransactionRevenueMetrics extends GoogleAnalyticsMetricsParser
     /**
      * Sets the data retrieved from Google Analytics in local vars
      */
-    function parse()
+    public function parse()
     {
         parent::parse();
 
@@ -52,14 +54,14 @@ class TransactionRevenueMetrics extends GoogleAnalyticsMetricsParser
         $this->_revenuePerSource = $this->_results;
 
         /*echo "<pre>";
-        print_r($this->_data);
+        print_r($this->_results);
         echo "</pre>";*/
     }
 
     /**
      * @return mixed
      */
-    function getTotalRevenue()
+    public function getTotalRevenue()
     {
         return $this->_totalRevenue;
     }
@@ -67,7 +69,7 @@ class TransactionRevenueMetrics extends GoogleAnalyticsMetricsParser
     /**
      * @return array
      */
-    function getRevenuePerSource()
+    public function getRevenuePerSource()
     {
         return $this->_revenuePerSource;
     }

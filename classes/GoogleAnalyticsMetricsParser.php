@@ -69,7 +69,7 @@ class GoogleAnalyticsMetricsParser
      * @param $from
      * @param $to
      */
-    function __construct($metrics, $dimensions, Google_AnalyticsService $service, $profileId, $from, $to)
+    public function __construct($metrics, $dimensions, Google_AnalyticsService $service, $profileId, $from, $to)
     {
         $this->_metrics = $metrics;
         $this->_dimensions = $dimensions;
@@ -83,7 +83,7 @@ class GoogleAnalyticsMetricsParser
      * Parses the metrics and dimensions and sends these to Google Analytics
      * Processes the retrieved data
      */
-    function parse()
+    public function parse()
     {
         $this->_data = $this->_service->data_ga->get('ga:' . $this->_profileId, $this->_from, $this->_to, $this->_metrics, array('dimensions' => $this->_dimensions));
         if (isset($this->_data['rows']) && sizeof($this->_data['rows']) > 0) {
