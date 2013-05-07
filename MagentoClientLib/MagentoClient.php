@@ -82,37 +82,70 @@ class MagentoClient
         return $this->_client->call($this->_session, $method, $arg);
     }
 
-    public function getProductInfo($sku){
+    /**
+     * Gets the product info by its Sku
+     * @param $sku
+     * @return mixed
+     */
+    public function getProductInfo($sku)
+    {
         //return $this->_call('catalog_product.info', $sku);
-        try{
+        try {
             return $this->_call('catalog_product.info', $sku);
-        }
-        catch(SoapFaultException $e){
+        } catch (SoapFaultException $e) {
         }
         catch (Exception $e) {
         }
     }
 
-    public function getProductList(){
+    /**
+     * Returns a list with all products in Magento
+     * @return mixed
+     */
+    public function getProductList()
+    {
         return $this->_call('catalog_product.list', '');
     }
 
-    public function getProductProfit($sku){
-       $product = $this->getProductInfo((string) $sku);
-       echo $product['price'] . ' - ' . $product['cost'] . " ";
-       return $product['price'] - $product['cost'];
+    /**
+     * Calculates the profit made on a product by substracting the product costs from the product price
+     * @param $sku
+     * @return mixed
+     */
+    public function getProductProfit($sku)
+    {
+        $product = $this->getProductInfo((string)$sku);
+        return $product['price'] - $product['cost'];
     }
 
-    public function getSalesOrderDetails($salesOrderId) {
+    /**
+     * Returns complete sales order by its Id
+     * @param $salesOrderId
+     * @return mixed
+     */
+    public function getSalesOrderDetails($salesOrderId)
+    {
         return $this->_call('sales_order.info', $salesOrderId);
     }
 
-    public function getSalesOrderDetailsItems($salesOrderId) {
+    /**
+     * Returns the items from a sales order by its Id
+     * @param $salesOrderId
+     * @return mixed
+     */
+    public function getSalesOrderDetailsItems($salesOrderId)
+    {
         $data = $this->getSalesOrderDetails($salesOrderId);
         return $data['items'];
     }
 
-    public function getSalesOrderDetailsItemsSku($salesOrderId) {
+    /**
+     * Returns all the Sku's on a sales order by its Id
+     * @param $salesOrderId
+     * @return array
+     */
+    public function getSalesOrderDetailsItemsSku($salesOrderId)
+    {
         $skus = array();
         $items = $this->getSalesOrderDetailsItems($salesOrderId);
         foreach ($items as $item) {
@@ -121,7 +154,13 @@ class MagentoClient
         return $skus;
     }
 
-    public function getSalesOrderProfit($salesOrderId) {
+    /**
+     * Returns the profit made on a sales order by calculating the profit made per product by its Id
+     * @param $salesOrderId
+     * @return int
+     */
+    public function getSalesOrderProfit($salesOrderId)
+    {
         $profit = 0;
         $items = $this->getSalesOrderDetailsItems($salesOrderId);
 
