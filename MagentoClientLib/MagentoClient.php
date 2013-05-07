@@ -49,6 +49,8 @@ class MagentoClient
         $this->_apiUser = $apiUser;
         $this->_apiKey = $apiKey;
         $this->_magentoHost = $host;
+
+        $this->connect();
     }
 
     /**
@@ -169,7 +171,6 @@ class MagentoClient
                 $profit += $item['price'] - $item['base_cost'];
             }
         }
-
         return $profit;
     }
 }
