@@ -54,7 +54,6 @@ $apiKey = 'Ka0yoiAOJhoifqap0oinhlkqfn0oe8vh0234gtQ965WGEWROIUHJWEROIGNRESD98OHL2
 $host = 'http://magento.presteren.nu/api/soap/?wsdl';
 
 $mClient = new MagentoClient($apiUser, $apiKey, $host);
-$mClient->connect();
 
 $from = date('Y-m-d', time() - 30 * 24 * 60 * 60); // 30 days
 $to = date('Y-m-d'); // today
@@ -67,10 +66,10 @@ $data = $OrderPerMarketingChannel->getOrdersPerChannel();
 $profit = 0;
 
 foreach ($data as $mcKey => $mcValue) {
-    echo "<h1>".$mcKey."</h1>";
+    echo "<h1>" . $mcKey . "</h1>";
     $profit = 0;
     foreach ($mcValue as $oKey => $oValue) {
-       // echo "<h3>" . $oKey . "</h3>";
+        // echo "<h3>" . $oKey . "</h3>";
         //echo "<pre>";
         //print_r($mClient->getSalesOrderProfit($oKey));
         //echo "</pre>";
