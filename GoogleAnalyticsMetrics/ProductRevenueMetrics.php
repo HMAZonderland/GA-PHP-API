@@ -9,7 +9,6 @@
 
 class ProductRevenueMetrics extends GoogleAnalyticsMetricsParser
 {
-
     /**
      * Contains productSKU
      * @var string

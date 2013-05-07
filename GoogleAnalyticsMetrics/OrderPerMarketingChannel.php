@@ -9,7 +9,6 @@
 
 class OrderPerMarketingChannel extends GoogleAnalyticsMetricsParser
 {
-
     /**
      * Constructor, passes on the service variable to the parser
      * @param Google_AnalyticsService $service
@@ -54,11 +53,8 @@ class OrderPerMarketingChannel extends GoogleAnalyticsMetricsParser
         $transactionId = null;
 
         foreach ($this->_results as $row) {
-
             foreach ($row as $key => $value) {
-
                 //echo "processing key: " . $key . " value " . $value . "<br />";
-
                 if ($key == 'source') {
                     $source = $value;
                     if (!isset($result[$source])) {

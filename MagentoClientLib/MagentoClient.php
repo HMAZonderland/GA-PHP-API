@@ -9,7 +9,6 @@
 
 class MagentoClient
 {
-
     /**
      * Containing a soapclient
      * @var SoapClient
@@ -174,3 +173,5 @@ class MagentoClient
         return $profit;
     }
 }
+
+?>

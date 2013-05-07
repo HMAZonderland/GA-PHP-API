@@ -73,9 +73,7 @@ if ((isset($_GET['propertyId']) && !empty($_GET['propertyId'])) && (isset($_GET[
     $GoogleAnalyticsAccountSelector->listAllProfiles();
 
     if ($GoogleAnalyticsAccountSelector->hasGoogleAnalyticsAccounts()) {
-
         echo "Selecteer een account, property en profile: <br />";
-
         foreach ($GoogleAnalyticsAccountSelector->getGoogleAnalyticsAccounts() as $account) {
             $properties = $account->getProperties();
 
@@ -108,7 +106,7 @@ if ((isset($GoogleAnalyticsAccount)) && (sizeof($GoogleAnalyticsAccount->getProp
     //$OrderPerMarketingChannel = new OrderPerMarketingChannel($service, $_GET['profileId'], $from, $to);
     //$OrderPerMarketingChannel->getOrdersPerChannel();
     //$ProductRevenueMetrics = new ProductRevenueMetrics($service, $_GET['profileId'], $from, $to);
-    /*$TransactionRevenueMetrics = new TransactionRevenueMetrics($service, $_GET['profileId'], $from, $to);
+    $TransactionRevenueMetrics = new TransactionRevenueMetrics($service, $_GET['profileId'], $from, $to);
 
     $kosten = 5000; // per maand
 
@@ -122,8 +120,7 @@ if ((isset($GoogleAnalyticsAccount)) && (sizeof($GoogleAnalyticsAccount->getProp
 
         $clickCosts = 0;
 
-        if ($source['source'] == "beslist.nl" || $source['source'] == "kieskeurig.nl" || $source['source'] == "beslistslimmershoppen")
-        {
+        if ($source['source'] == "beslist.nl" || $source['source'] == "kieskeurig.nl" || $source['source'] == "beslistslimmershoppen") {
 
             if ($source['source'] == "beslist.nl") {
                 $clickCosts = 125;
@@ -158,5 +155,5 @@ if ((isset($GoogleAnalyticsAccount)) && (sizeof($GoogleAnalyticsAccount->getProp
                 echo "Rendement met specifieke kosten: " . $calc->calculateProfitSpecificPercentageReadable() . "%";
             }
         }
-    }*/
+    }
 }

@@ -49,6 +49,7 @@ class MagentoClient
         $this->_apiKey = $apiKey;
         $this->_magentoHost = $host;
 
+        // Connect to the Magento API
         $this->connect();
     }
 
@@ -57,7 +58,9 @@ class MagentoClient
      */
     public function connect()
     {
+        // Create SoapClient for requesting data
         $this->_client = new SoapClient($this->_magentoHost);
+        // Store session
         $this->_session = $this->_client->login($this->_apiUser, $this->_apiKey);
     }
 
@@ -92,3 +95,5 @@ class MagentoClient
         return $this->_call('catalog_product.info', $id);
     }
 }
+
+?>

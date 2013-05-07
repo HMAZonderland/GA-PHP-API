@@ -4,7 +4,6 @@
  */
 class TransactionRevenueMetrics extends GoogleAnalyticsMetricsParser
 {
-
     /**
      * used to store totalRevenue
      * @var float
