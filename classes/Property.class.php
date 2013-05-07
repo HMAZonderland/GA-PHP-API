@@ -5,7 +5,6 @@
  */
 class Property
 {
-
     /**
      * containing webpropertyId
      * @var int

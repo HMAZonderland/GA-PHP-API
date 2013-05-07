@@ -65,9 +65,7 @@ class GoogleAnalyticsAccountSelector
         $this->_GoogleAnalyticsAccoounts = array();
 
         if (sizeof($list['items']) > 0) {
-
             foreach ($list['items'] as $item) {
-
                 /*echo "<pre>";
                 print_r($item);
                 echo "</pre>";*/
@@ -90,7 +88,6 @@ class GoogleAnalyticsAccountSelector
 
                 // If the account doesn't exists, create it and add the property and the profile right away
                 if (!array_key_exists($accountId, $this->_GoogleAnalyticsAccoounts)) {
-
                     $property = new Property();
                     $property->setWebPropertyId($webPropertyId);
                     $property->setName($propertyName);
@@ -103,7 +100,6 @@ class GoogleAnalyticsAccountSelector
                     $this->_GoogleAnalyticsAccoounts['' . $accountId . ''] = $GoogleAnalyticsAccount;
                 } // Check if the property excists in the specified account array.
                 else if (!array_key_exists($webPropertyId, $this->_GoogleAnalyticsAccoounts[$accountId]->getProperties())) {
-
                     // The property doesn't exists, lets create it and add the profile to it.
                     $property = new Property();
                     $property->setWebPropertyId($webPropertyId);
@@ -112,9 +108,7 @@ class GoogleAnalyticsAccountSelector
 
                     // And add it to the Google Analytics account.
                     $this->_GoogleAnalyticsAccoounts[$accountId]->addProperty($property);
-
                 } else {
-
                     // Property exists, lets add the profile to it
                     $properties = $this->_GoogleAnalyticsAccoounts[$accountId]->getProperties();
                     $property = $properties[$webPropertyId];

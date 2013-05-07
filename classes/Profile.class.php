@@ -5,7 +5,6 @@
  */
 class Profile
 {
-
     /**
      * containing profileId
      * @var int

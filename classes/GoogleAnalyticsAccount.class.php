@@ -4,7 +4,6 @@
  */
 class GoogleAnalyticsAccount
 {
-
     /**
      * containing Google Analytics Account Id
      * @var int
