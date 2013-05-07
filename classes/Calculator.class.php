@@ -126,7 +126,6 @@ class Calculator
      */
     public function calculateCostsRatio()
     {
-        echo "</br >" . $this->_costs . " * " . $this->_ratio . " = " . $this->_costs * $this->_ratio . "</br >";
         return $this->_costs * $this->_ratio;
     }
 
@@ -145,7 +144,6 @@ class Calculator
      */
     public function calculateRevenueRatio()
     {
-        echo "</br >" . $this->_revenue . " * " . $this->_ratio . " = " . $this->_revenue * $this->_ratio . " </br >";
         return $this->_revenue * $this->_ratio;
     }
 
@@ -155,7 +153,6 @@ class Calculator
      */
     public function calculateProfit()
     {
-        echo "</br >" . $this->_revenue . " - " . $this->_costs . " = " . $this->_revenue - $this->_costs . " </br >";
         return $this->_revenue - $this->_costs;
     }
 
@@ -174,8 +171,7 @@ class Calculator
      */
     public function calculateRatioProfit()
     {
-        echo "</br >(" . $this->_revenue . " - " . $this->_costs . ") * " . $this->_ratio . " = " . ($this->_revenue - $this->_costs) * $this->_ratio . " </br >";
-        return ($this->_revenue - $this->_costs) * $this->_ratio;
+        return $this->calculateProfit() * $this->_ratio;
     }
 
     /**
@@ -193,8 +189,7 @@ class Calculator
      */
     public function calculateRatioProfitSpecific()
     {
-        echo "</br >(" . $this->_revenue . " - (" . $this->_costs . " + " . $this->_specificCosts . ")) * " . $this->_ratio . " = " . ($this->_revenue - ($this->_costs + $this->_specificCosts)) * $this->_ratio . " </br >";
-        return ($this->_revenue - ($this->_costs + $this->_specificCosts)) * $this->_ratio;
+        return ($this->calculateProfit() + $this->_specificCosts) * $this->_ratio;
     }
 
     /**
@@ -217,8 +212,7 @@ class Calculator
     public function calculateProfitPercentage()
     {
         if ($this->_ratio > 0) {
-            echo "</br >(" . (($this->_revenue - $this->_costs) * $this->_ratio) . ") / " . ($this->_revenue * $this->_ratio) . " = " . ((($this->_revenue - $this->_costs) * $this->_ratio)) / ($this->_revenue * $this->_ratio) . "<br />";
-            return ((($this->_revenue - $this->_costs) * $this->_ratio)) / ($this->_revenue * $this->_ratio);
+            return $this->calculateRatioProfitSpecific() / ($this->_revenue * $this->_ratio);
         } else {
             return 0;
         }
@@ -244,8 +238,7 @@ class Calculator
     public function calculateProfitSpecificPercentage()
     {
         if ($this->_ratio > 0) {
-            echo "</br >(" . (($this->_revenue - $this->_costs) * $this->_ratio) . " - " . $this->_specificCosts . ") / " . ($this->_revenue * $this->_ratio) . " = " . ((($this->_revenue - $this->_costs) * $this->_ratio) - $this->_specificCosts) / ($this->_revenue * $this->_ratio) . "<br />";
-            return ((($this->_revenue - $this->_costs) * $this->_ratio) - $this->_specificCosts) / ($this->_revenue * $this->_ratio);
+            return $this->calculateRatioSpecificProfit() / ($this->_revenue * $this->_ratio);
         } else {
             return 0;
         }
