@@ -54,7 +54,6 @@ class OrderPerMarketingChannel extends GoogleAnalyticsMetricsParser
 
         foreach ($this->_results as $row) {
             foreach ($row as $key => $value) {
-                //echo "processing key: " . $key . " value " . $value . "<br />";
                 if ($key == 'source') {
                     $source = $value;
                     if (!isset($result[$source])) {
@@ -78,11 +77,6 @@ class OrderPerMarketingChannel extends GoogleAnalyticsMetricsParser
                 }
             }
         }
-
-        //echo "<pre>";
-        //print_r($result);
-        //print_r($this->_results);
-        //echo "</pre>";
 
         return $result;
     }

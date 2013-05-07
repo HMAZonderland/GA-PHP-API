@@ -55,21 +55,12 @@ class GoogleAnalyticsAccountSelector
      */
     public function listProfiles($propertyId, $accountId)
     {
-
         $list = $this->listManagementProfiles($propertyId, $accountId);
-
-        /*echo "<pre>";
-        print_r($list);
-        echo "</pre>";*/
 
         $this->_GoogleAnalyticsAccoounts = array();
 
         if (sizeof($list['items']) > 0) {
             foreach ($list['items'] as $item) {
-                /*echo "<pre>";
-                print_r($item);
-                echo "</pre>";*/
-
                 // GoogleAnalyticsAccount
                 $accountId = $item['accountId'];
 
@@ -115,10 +106,6 @@ class GoogleAnalyticsAccountSelector
                     $property->addProfile($profile);
                 }
             }
-
-            /*echo "<pre>";
-            print_r($accounts);
-            echo "</pre>";*/
         }
         return $this->_GoogleAnalyticsAccoounts;
     }
@@ -128,7 +115,6 @@ class GoogleAnalyticsAccountSelector
      */
     private function listManagementProfiles($propertyId, $accountId)
     {
-        //echo "VARS: " . $propertyId . " " . $accountId;
         return $this->_service->management_profiles->listManagementProfiles($accountId, $propertyId);
     }
 }

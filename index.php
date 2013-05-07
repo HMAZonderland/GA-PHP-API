@@ -14,7 +14,6 @@ require_once dirname(__FILE__) . '/classes/Property.class.php';
 require_once dirname(__FILE__) . '/classes/Calculator.class.php';
 require_once dirname(__FILE__) . '/classes/GoogleAnalyticsAccountSelector.php';
 require_once dirname(__FILE__) . '/GoogleAnalyticsMetrics/OrderPerMarketingChannel.php';
-//require_once dirname(__FILE__) . '/classes/ExcelReader.php';
 
 $scriptUri = "http://" . $_SERVER["HTTP_HOST"] . $_SERVER['PHP_SELF'];
 
@@ -64,10 +63,6 @@ if ((isset($_GET['propertyId']) && !empty($_GET['propertyId'])) && (isset($_GET[
     // Since we have a propertyId and accountId we know that there is only 1 account, so we can take the first object
     // from the array and use it as object.
     $GoogleAnalyticsAccount = $GoogleAnalyticsAccountList[key($GoogleAnalyticsAccountList)];
-
-    /*echo "<pre>";
-    print_r($GoogleAnalyticsAccount);
-    echo "</pre>";*/
 } else {
     // Accounts listen
     $GoogleAnalyticsAccountSelector->listAllProfiles();
@@ -76,18 +71,8 @@ if ((isset($_GET['propertyId']) && !empty($_GET['propertyId'])) && (isset($_GET[
         echo "Selecteer een account, property en profile: <br />";
         foreach ($GoogleAnalyticsAccountSelector->getGoogleAnalyticsAccounts() as $account) {
             $properties = $account->getProperties();
-
-            /*echo "<pre>";
-            print_r($properties);
-            echo "</pre>";*/
-
             foreach ($properties as $property) {
                 $profiles = $property->getProfiles();
-
-                /*echo "<pre>";
-                print_r($profiles);
-                echo "</pre>";*/
-
                 foreach ($profiles as $profile) {
                     echo "- <a href=\"index.php?accountId=" . $account->getAccountId() . "&profileId=" . $profile->getProfileId() . "&propertyId=" . $property->getWebPropertyId() . "\">" . $profile->getName() . "</a><br />";
                 }

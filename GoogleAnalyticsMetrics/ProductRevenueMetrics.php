@@ -36,7 +36,6 @@ class ProductRevenueMetrics extends GoogleAnalyticsMetricsParser
      */
     function __construct(Google_AnalyticsService $service, $profileId, $from, $to)
     {
-
         // dimensions
         $dimensions = 'ga:source';
         $this->_params[] = 'source';

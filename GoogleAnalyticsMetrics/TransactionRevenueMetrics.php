@@ -51,10 +51,6 @@ class TransactionRevenueMetrics extends GoogleAnalyticsMetricsParser
 
         $this->_totalRevenue = $this->_data['totalsForAllResults']['ga:transactionRevenue'];
         $this->_revenuePerSource = $this->_results;
-
-        /*echo "<pre>";
-        print_r($this->_results);
-        echo "</pre>";*/
     }
 
     /**
