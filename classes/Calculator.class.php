@@ -189,7 +189,7 @@ class Calculator
      */
     public function calculateRatioProfitSpecific()
     {
-        return ($this->calculateProfit() + $this->_specificCosts) * $this->_ratio;
+        return ($this->calculateProfit() - $this->_specificCosts) * $this->_ratio;
     }
 
     /**
@@ -198,7 +198,7 @@ class Calculator
      */
     public function calculateProfitPercentageReadable()
     {
-        $profitpercentage = $this->calculateProfitPercentage();
+        $profitpercentage = $this->calculateRatioProfitPercentage();
         if ($profitpercentage == 0) {
             return $profitpercentage;
         }
@@ -209,10 +209,10 @@ class Calculator
      * Calculates profit percentage based upon profit and costs
      * @return float|int
      */
-    public function calculateProfitPercentage()
+    public function calculateRatioProfitPercentage()
     {
         if ($this->_ratio > 0) {
-            return $this->calculateRatioProfitSpecific() / ($this->_revenue * $this->_ratio);
+            return $this->calculateRatioProfit() / ($this->_revenue * $this->_ratio);
         } else {
             return 0;
         }
@@ -242,6 +242,15 @@ class Calculator
         } else {
             return 0;
         }
+    }
+
+    /**
+     * Calclates the profit minus the specific costs.
+     * return float|int
+     */
+    public function calculateRatioSpecificProfit()
+    {
+        return $this->calculateRatioProfit() - $this->_specificCosts;
     }
 }
 

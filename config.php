@@ -7,19 +7,16 @@
  * To change this template use File | Settings | File Templates.
  */
 
-// TODO change to false before committing
-define("DEBUG", false);
+// Google Console Credentials
+define('ACCESS_TYPE', 'online');
+define('APPLICATION_NAME', 'esser-emerik rendements berekening API');
+define('CLIENT_ID', '211121854101.apps.googleusercontent.com');
+define('CLIENT_SECRET', 'UWMHZxqbyYvbzFrVqSK_45to');
+define('REDIRECT_URI', 'http://' . $_SERVER["HTTP_HOST"] . $_SERVER['PHP_SELF']);
+define('DEVELOPER_KEY', 'AIzaSyAYWJ-TCPgMkE101Jy2OLZXkmyP1-cCsBE');
 
-if(DEBUG === true) {
-    $oauthClientId = '1004798276934-9ftpna6pkk2ugai7kjs02jstvlkorsh8.apps.googleusercontent.com';
-    $oauthClientSecret = 'mhiyTXd7x71Q0vFJF37pNWOE';
-    $oathRedirectURI = 'http://localhost:8080/analytics/oauth2callback';
-    $devKey = 'AIzaSyAh6S1L0znVsFXJxkhBM2OWb8gBMHnSDHs';
-    $siteName = 'localhost:8080/analytics/oauth2callback';
-} else {
-    $oauthClientId = '211121854101.apps.googleusercontent.com';
-    $oauthClientSecret = 'UWMHZxqbyYvbzFrVqSK_45to';
-    $oathRedirectURI = 'http://esser-emmerik.hugozonderland.nl/oauth2callback';
-    $devKey = 'AIzaSyAYWJ-TCPgMkE101Jy2OLZXkmyP1-cCsBE';
-    $siteName = 'esser-emmerik.hugozonderland.nl';
-}
+// Magento API settings
+define('API_USER', 'Hugo');
+define('API_KEY', 'Ka0yoiAOJhoifqap0oinhlkqfn0oe8vh0234gtQ965WGEWROIUHJWEROIGNRESD98OHL234TWP98YWERFGNLKAERGO87HKJN234TPHJKZWGRHLI');
+define('API_HOST', 'http://magento.presteren.nu/api/soap/?wsdl');
+?>

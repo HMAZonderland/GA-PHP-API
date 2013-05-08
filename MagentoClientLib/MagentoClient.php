@@ -172,6 +172,23 @@ class MagentoClient
         }
         return $profit;
     }
+
+    /**
+     * Calculates the basecosts of all items on a single order
+     * @param $salesOrderId
+     * @return int
+     */
+    public function getSalesOrderBaseCost($salesOrderId)
+    {
+        $basecost = 0;
+        $items = $this->getSalesOrderDetailsItems($salesOrderId);
+
+        foreach ($items as $item) {
+            $basecost += $item['base_cost'];
+        }
+
+        return $basecost;
+    }
 }
 
 ?>
