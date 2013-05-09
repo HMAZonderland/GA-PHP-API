@@ -76,8 +76,6 @@ require_once dirname(__FILE__) . '/clients/GoogleAnalyticsAccountSelector.php';
         <?php
         if ((isset($GoogleAnalyticsAccount)) && (sizeof($GoogleAnalyticsAccount->getProperties() > 0)) && $GoogleAnalyticsAccount != null) {
 
-         echo "Kosten = ??? vaste lasten? inkoopkosten??" . "<br />";
-            echo "Totale omzet = de omzet die afkomstig is van het marketing kanaal." . "<br />";
             // Tijd filter
             $from = date('Y-m-d', time() - 30 * 24 * 60 * 60); // 30 days
             $to = date('Y-m-d'); // today
@@ -126,31 +124,44 @@ require_once dirname(__FILE__) . '/clients/GoogleAnalyticsAccountSelector.php';
 
                         $specificCosts = $source['transactionTax'] + $source['transactionShipping'] + $clickCosts + $basecosts;
                         $calc->setSpecificCosts($specificCosts);
+                        $rendement = $calc->calculateProfitSpecificPercentageReadable();
+                        if($rendement > 0) {
+                            $color = "#00FF00";
+                        } else {
+                            $color = "#FF0000";
+                        }
 
                         echo "<h2 class=\"ic\">" . $source['source'] . "</h2>";
+                        echo "<h3>Omzet uit Google Analytics</h3>";
                         echo "<p>";
                         echo "Totale omzet = &euro;" . $calc->getRevenue() . "<br />";
                         echo "Omzet " . $source['source'] . " = &euro; " . $source['transactionRevenue'] . "<br />";
                         echo $source['transactionRevenue'] . " / " . $TransactionRevenueMetrics->getTotalRevenue() . " = " . $source['transactionRevenue'] / $TransactionRevenueMetrics->getTotalRevenue() . "%<br />";
-
                         echo "Percentage = " . $calc->getRatioReadable() . "%<br /><br />";
+                        echo "</p>";
 
+                        echo "<h3>Google Analytics en vaste kosten en kosten marketingkanaal</h3>";
+                        echo "<p>";
                         echo "Totale Kosten per maand = &euro;" . $calc->getCosts() . "<br />";
                         echo "Kosten naar ratio " . $source['source'] . " = &euro;" . $calc->calculateCostsRatioReadable() . " <br />";
-
-                        echo "Winst (omzet - (vaste) kosten): &euro;" . $calc->calculateRatioProfitReadable() . "<br />";
+                        echo "Klikkosten " . $source['source'] . " = &euro;" . $clickCosts . "<br />";
+                        echo "Winst = (omzet - (vaste kosten + klikkosten)): &euro;" . $calc->calculateRatioProfitReadable() . "<br />";
                         echo "Rendement zonder specifieke kosten: " . $calc->calculateProfitPercentageReadable() . "%<br /><br />";
+                        echo "</p>";
 
+                        echo "<h3>Google Analytics en vastekosten en specifieke kosten en inkoopkosten Magento</h3>";
+                        echo "<p>";
+                        echo "Totale Kosten per maand = &euro;" . $calc->getCosts() . "<br />";
+                        echo "Kosten naar ratio " . $source['source'] . " = &euro;" . $calc->calculateCostsRatioReadable() . " <br />";
                         echo "Klikkosten " . $source['source'] . "= &euro;" . $clickCosts . "<br />";
                         echo "Belasting = &euro;" . $source['transactionTax'] . "<br />";
                         echo "Verzendkosten = &euro;" . $source['transactionShipping'] . "<br />";
                         echo "Inkoopkosten = &euro;" . $basecosts . "<br />";
-                        echo "Specifieke kosten (klik, belasting, inkoopkosten + verzend) = &euro;" . $calc->getSpecificCosts() . "<br />";
-                        echo "Winst (omzet - ((vaste) kosten + specifiekekosten): &euro;" . $calc->calculateRatioSpecificProfitReadable() . "<br />";
-                        echo "Rendement met specifieke kosten: " . $calc->calculateProfitSpecificPercentageReadable() . "%";
+                        echo "Specifieke kosten = klikkosten + belasting + inkoopkosten + verzend: &euro;" . $calc->getSpecificCosts() . "<br />";
+                        echo "Winst = (omzet - (vaste kosten + specifiekekosten): &euro;" . $calc->calculateRatioSpecificProfitReadable() . "<br />";
+                        echo "Rendement met specifieke kosten: <span style=\"color: $color;\"><strong>" . $rendement . "%</strong></span>";
                         echo "</p>";
                         echo "</div>";
-
                     }
                 }
             }
