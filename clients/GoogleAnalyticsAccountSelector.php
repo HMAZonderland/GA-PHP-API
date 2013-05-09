@@ -1,3 +1,17 @@
+<section class="onerow full color3 tagline taglineimg">
+    <div class="inner">
+        <img src="http://www.presteren.nu/wp-content/uploads/static/tagline/website/pano-esser-emmerik.jpg"
+             alt="Online verkoop experts">
+
+        <div class="caption-bg" style="height: 80px;"></div>
+        <div class="onepcssgrid-1200">
+            <div class="col12">
+                <div class="caption">Selecteer een account, property en profile</div>
+            </div>
+        </div>
+        <div class="arrow" style="left: 106.57359313964844px; "></div>
+    </div>
+</section>
 <?php
 /**
  * Created by JetBrains PhpStorm.
@@ -23,22 +37,45 @@ if ((isset($_GET['propertyId']) && !empty($_GET['propertyId'])) && (isset($_GET[
     // from the array and use it as object.
     $GoogleAnalyticsAccount = $GoogleAnalyticsAccountList[key($GoogleAnalyticsAccountList)];
 } else {
-    // Accounts listen
-    $GoogleAnalyticsAccountSelector->listAllProfiles();
 
-    if ($GoogleAnalyticsAccountSelector->hasGoogleAnalyticsAccounts()) {
-        echo "Selecteer een account, property en profile: <br />";
-        foreach ($GoogleAnalyticsAccountSelector->getGoogleAnalyticsAccounts() as $account) {
-            $properties = $account->getProperties();
-            foreach ($properties as $property) {
-                $profiles = $property->getProfiles();
-                foreach ($profiles as $profile) {
-                    echo "- <a href=\"index.php?accountId=" . $account->getAccountId() . "&profileId=" . $profile->getProfileId() . "&propertyId=" . $property->getWebPropertyId() . "\">" . $profile->getName() . "</a><br />";
+    ?>
+    <section class="onerow full color1">
+        <div class="onepcssgrid-1200">
+            <?php
+
+            // Accounts listen
+            $GoogleAnalyticsAccountSelector->listAllProfiles();
+
+            // Used to switch CSS styles
+            $counter = 0;
+
+            if ($GoogleAnalyticsAccountSelector->hasGoogleAnalyticsAccounts()) {
+                foreach ($GoogleAnalyticsAccountSelector->getGoogleAnalyticsAccounts() as $account) {
+                    if ($counter % 2 == 0) {
+                        echo '<div class="col6">';
+                    } else {
+                        echo '<div class="col6 last">';
+                    }
+                    echo '<h2 class="ic">' . $account->getName() . '</h2>';
+                    $properties = $account->getProperties();
+                    foreach ($properties as $property) {
+                        $profiles = $property->getProfiles();
+                        echo '<p>';
+                        foreach ($profiles as $profile) {
+                            echo '<a href="index.php?accountId=' . $account->getAccountId() . '&profileId=' . $profile->getProfileId() . '&propertyId=' . $property->getWebPropertyId() . '">' . $profile->getName() . '</a><br />';
+                        }
+                        echo '</p>';
+                    }
+                    echo '<p></p></div>';
+                    $counter++;
                 }
+            } else {
+                echo 'Geen accounts gevonden. Maak eerst een Google Analytics Account aan.';
             }
-        }
-    } else {
-        echo "Geen accounts gevonden. Maak eerst een Google Analytics Account aan.";
-    }
+
+            ?>
+        </div>
+    </section>
+<?php
 }
 

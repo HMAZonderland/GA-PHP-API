@@ -48,6 +48,14 @@ require_once dirname(__FILE__) . '/includes.php';
     </div>
 </header>
 
+<?php
+/**
+ * @TODO: make this part of code more senseable
+ */
+// The only file that has to be included in the body for style purposes.
+require_once dirname(__FILE__) . '/clients/GoogleAnalyticsAccountSelector.php';
+?>
+
 <section class="onerow full color1">
     <div class="onepcssgrid-1200">
         <?php

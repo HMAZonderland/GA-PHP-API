@@ -21,7 +21,6 @@ require_once dirname(__FILE__) . '/classes/Property.class.php';
 
 // Google Analytics accounts selector
 require_once dirname(__FILE__) . '/classes/GoogleAnalyticsAccountSelector.class.php';
-require_once dirname(__FILE__) . '/clients/GoogleAnalyticsAccountSelector.php';
 
 // Dimension & metrics
 require_once dirname(__FILE__) . '/classes/GoogleAnalyticsMetricsParser.class.php';

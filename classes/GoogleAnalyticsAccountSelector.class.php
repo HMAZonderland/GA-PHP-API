@@ -56,16 +56,16 @@ class GoogleAnalyticsAccountSelector
     public function listProfiles($propertyId, $accountId)
     {
         $list = $this->listManagementProfiles($propertyId, $accountId);
-
         $this->_GoogleAnalyticsAccoounts = array();
 
         if (sizeof($list['items']) > 0) {
             foreach ($list['items'] as $item) {
                 // GoogleAnalyticsAccount
                 $accountId = $item['accountId'];
+                $accountName = $item['websiteUrl'];
 
                 // Property
-                $propertyName = $item['websiteUrl'];
+                $propertyName = $item['name'];
                 $webPropertyId = $item['webPropertyId'];
 
                 // Profile
@@ -87,6 +87,7 @@ class GoogleAnalyticsAccountSelector
                     $GoogleAnalyticsAccount = new GoogleAnalyticsAccount();
                     $GoogleAnalyticsAccount->setAccountId($accountId);
                     $GoogleAnalyticsAccount->addProperty($property);
+                    $GoogleAnalyticsAccount->setName($accountName);
 
                     $this->_GoogleAnalyticsAccoounts['' . $accountId . ''] = $GoogleAnalyticsAccount;
                 } // Check if the property excists in the specified account array.
