@@ -27,15 +27,15 @@ $apiConfig = array(
     'application_name' => 'esser-emerik rendements berekening API',
 
     // OAuth2 Settings, you can get these keys at https://code.google.com/apis/console
-    'oauth2_client_id' => $oauthClientId,
-    'oauth2_client_secret' => $oauthClientSecret,
-    'oauth2_redirect_uri' => $oathRedirectURI,
+    'oauth2_client_id' => CLIENT_ID,
+    'oauth2_client_secret' => CLIENT_SECRET,
+    'oauth2_redirect_uri' => REDIRECT_URI,
 
     // The developer key, you get this at https://code.google.com/apis/console
-    'developer_key' => $devKey,
+    'developer_key' => DEVELOPER_KEY,
 
     // Site name to show in the Google's OAuth 1 authentication screen.
-    'site_name' => $siteName,
+    'site_name' => APPLICATION_NAME,
 
     // Which Authentication, Storage and HTTP IO classes to use.
     'authClass' => 'Google_OAuth2',
