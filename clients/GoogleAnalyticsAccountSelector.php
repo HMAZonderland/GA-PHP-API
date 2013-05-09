@@ -41,3 +41,4 @@ if ((isset($_GET['propertyId']) && !empty($_GET['propertyId'])) && (isset($_GET[
         echo "Geen accounts gevonden. Maak eerst een Google Analytics Account aan.";
     }
 }
+

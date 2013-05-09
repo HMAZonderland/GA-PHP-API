@@ -17,7 +17,7 @@ $gClient->setRedirectUri(REDIRECT_URI); // Where to redirect to after authentica
 $gClient->setDeveloperKey(DEVELOPER_KEY); // Developer key
 
 // $service implements the client interface, has to be set before auth cal
-$service = new Google_AnalyticsService($client);
+$service = new Google_AnalyticsService($gClient);
 
 // All Google Client  GET parameters
 if (isset($_GET['logout'])) { // logout: destroy token
@@ -27,7 +27,7 @@ if (isset($_GET['logout'])) { // logout: destroy token
 
 if (isset($_GET['code'])) { // we received the positive auth callback, get the token and store it in session
     $gClient->authenticate();
-    $_SESSION['token'] = $client->getAccessToken();
+    $_SESSION['token'] = $gClient->getAccessToken();
 }
 
 if (isset($_SESSION['token'])) { // extract token from session and configure client
@@ -35,7 +35,7 @@ if (isset($_SESSION['token'])) { // extract token from session and configure cli
     $gClient->setAccessToken($token);
 }
 
-if (!$client->getAccessToken()) { // auth call to google
+if (!$gClient->getAccessToken()) { // auth call to google
     $authUrl = $gClient->createAuthUrl();
     header("Location: " . $authUrl);
     die;
