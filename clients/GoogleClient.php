@@ -22,7 +22,7 @@ $service = new Google_AnalyticsService($gClient);
 // All Google Client  GET parameters
 if (isset($_GET['logout'])) { // logout: destroy token
     unset($_SESSION['token']);
-    die('Logged out.');
+    header("Location: index.php");
 }
 
 if (isset($_GET['code'])) { // we received the positive auth callback, get the token and store it in session
