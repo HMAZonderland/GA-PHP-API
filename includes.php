@@ -7,11 +7,12 @@
  * To change this template use File | Settings | File Templates.
  */
 // Config file
-require_once dirname(__FILE__) . 'config.php';
+require_once dirname(__FILE__) . '/config.php';
 
 // Google Client and Google Analytics Service
 require_once dirname(__FILE__) . '/GoogleClientLib/Google_Client.php';
 require_once dirname(__FILE__) . '/GoogleClientLib/contrib/Google_AnalyticsService.php';
+require_once dirname(__FILE__) . '/clients/GoogleClient.php';
 
 // Google Account, property and profile
 require_once dirname(__FILE__) . '/classes/GoogleAnalyticsAccount.class.php';
@@ -33,4 +34,5 @@ require_once dirname(__FILE__) . '/classes/Calculator.class.php';
 
 // MagentoClient
 require_once dirname(__FILE__) . '/MagentoClientLib/MagentoClient.php';
+require_once dirname(__FILE__) . '/clients/MagentoClient.php';
 ?>
