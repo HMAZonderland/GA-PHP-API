@@ -70,10 +70,14 @@ require_once dirname(__FILE__) . '/includes.php';
 require_once dirname(__FILE__) . '/clients/GoogleAnalyticsAccountSelector.php';
 ?>
 
+
 <section class="onerow full color1">
     <div class="onepcssgrid-1200">
         <?php
         if ((isset($GoogleAnalyticsAccount)) && (sizeof($GoogleAnalyticsAccount->getProperties() > 0)) && $GoogleAnalyticsAccount != null) {
+
+         echo "Kosten = ??? vaste lasten? inkoopkosten??" . "<br />";
+            echo "Totale omzet = de omzet die afkomstig is van het marketing kanaal." . "<br />";
             // Tijd filter
             $from = date('Y-m-d', time() - 30 * 24 * 60 * 60); // 30 days
             $to = date('Y-m-d'); // today
@@ -131,13 +135,13 @@ require_once dirname(__FILE__) . '/clients/GoogleAnalyticsAccountSelector.php';
 
                         echo "Percentage = " . $calc->getRatioReadable() . "%<br /><br />";
 
-                        echo "Kosten = &euro;" . $calc->getCosts() . "<br />";
-                        echo "Kosten " . $source['source'] . " = &euro;" . $calc->calculateCostsRatioReadable() . " <br />";
+                        echo "Totale Kosten per maand = &euro;" . $calc->getCosts() . "<br />";
+                        echo "Kosten naar ratio " . $source['source'] . " = &euro;" . $calc->calculateCostsRatioReadable() . " <br />";
 
                         echo "Winst (omzet - (vaste) kosten): &euro;" . $calc->calculateRatioProfitReadable() . "<br />";
                         echo "Rendement zonder specifieke kosten: " . $calc->calculateProfitPercentageReadable() . "%<br /><br />";
 
-                        echo "Klikkosten = &euro;" . $clickCosts . "<br />";
+                        echo "Klikkosten " . $source['source'] . "= &euro;" . $clickCosts . "<br />";
                         echo "Belasting = &euro;" . $source['transactionTax'] . "<br />";
                         echo "Verzendkosten = &euro;" . $source['transactionShipping'] . "<br />";
                         echo "Inkoopkosten = &euro;" . $basecosts . "<br />";
@@ -146,6 +150,7 @@ require_once dirname(__FILE__) . '/clients/GoogleAnalyticsAccountSelector.php';
                         echo "Rendement met specifieke kosten: " . $calc->calculateProfitSpecificPercentageReadable() . "%";
                         echo "</p>";
                         echo "</div>";
+
                     }
                 }
             }
