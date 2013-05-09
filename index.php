@@ -75,10 +75,9 @@ require_once dirname(__FILE__) . '/clients/GoogleAnalyticsAccountSelector.php';
     <div class="onepcssgrid-1200">
         <?php
         if ((isset($GoogleAnalyticsAccount)) && (sizeof($GoogleAnalyticsAccount->getProperties() > 0)) && $GoogleAnalyticsAccount != null) {
-
-            // Tijd filter
-            $from = date('Y-m-d', time() - 30 * 24 * 60 * 60); // 30 days
-            $to = date('Y-m-d'); // today
+            // 30 day time filter
+            $from = date('Y-m-d', time() - 30 * 24 * 60 * 60);
+            $to = date('Y-m-d');
 
             // Fetches all the Revenue metrics
             $TransactionRevenueMetrics = new TransactionRevenueMetrics($service, $_GET['profileId'], $from, $to);
@@ -87,21 +86,20 @@ require_once dirname(__FILE__) . '/clients/GoogleAnalyticsAccountSelector.php';
             $OrderPerMarketingChannel = new OrderPerMarketingChannel($service, $_GET['profileId'], $from, $to);
             $orderData = $OrderPerMarketingChannel->getOrdersPerChannel(); // all the order data
 
-            // Profit made over all orders in marketing channel
-            $profit;
+            // Costs this orgnisation has, per month now
+            $costs = 5000;
 
-            $kosten = 5000; // per maand
-
+            // Calulator
             $calc = new Calculator();
-            $calc->setCosts($kosten);
+            $calc->setCosts($costs);
 
             foreach ($TransactionRevenueMetrics->getRevenuePerSource() as $source) {
 
-                // set vals
+                // set vars
                 $calc->setRevenue($TransactionRevenueMetrics->getTotalRevenue());
                 $calc->setRatio($source['transactionRevenue'] / $TransactionRevenueMetrics->getTotalRevenue());
 
-                // reset
+                // set and reset basecosts
                 $basecosts = 0;
 
                 if ($source['source'] == "beslist.nl" || $source['source'] == "kieskeurig.nl" || $source['source'] == "beslistslimmershoppen") {
@@ -116,50 +114,53 @@ require_once dirname(__FILE__) . '/clients/GoogleAnalyticsAccountSelector.php';
                     }
 
                     if ($source['source'] != "(direct)") {
-
-                        // calculate profit over orders
+                        // calculate profit over orders in Magento
                         foreach ($orderData[$source['source']] as $orderKey => $orderValue) {
                             $basecosts += $mClient->getSalesOrderBaseCost($orderKey);
                         }
 
+                        // Set specific costs
                         $specificCosts = $source['transactionTax'] + $source['transactionShipping'] + $clickCosts + $basecosts;
                         $calc->setSpecificCosts($specificCosts);
-                        $rendement = $calc->calculateProfitSpecificPercentageReadable();
-                        if($rendement > 0) {
+
+                        // Efficiency
+                        $efficiency = $calc->calculateProfitSpecificPercentageReadable();
+
+                        // Color effect
+                        if ($efficiency > 0) {
                             $color = "#00FF00";
                         } else {
                             $color = "#FF0000";
                         }
 
-                        echo "<h2 class=\"ic\">" . $source['source'] . "</h2>";
+                        echo "<h2 class=\"ic\">" . $source['source'] . "</h2><br />";
                         echo "<h3>Omzet uit Google Analytics</h3>";
                         echo "<p>";
                         echo "Totale omzet = &euro;" . $calc->getRevenue() . "<br />";
-                        echo "Omzet " . $source['source'] . " = &euro; " . $source['transactionRevenue'] . "<br />";
-                        echo $source['transactionRevenue'] . " / " . $TransactionRevenueMetrics->getTotalRevenue() . " = " . $source['transactionRevenue'] / $TransactionRevenueMetrics->getTotalRevenue() . "%<br />";
-                        echo "Percentage = " . $calc->getRatioReadable() . "%<br /><br />";
+                        echo "Omzet " . $source['source'] . " = &euro;" . $source['transactionRevenue'] . "<br />";
+                        echo "Verhoudingspercentage = " . $calc->getRatioReadable() . "% (&euro;" . $source['transactionRevenue'] . " / &euro;" . $TransactionRevenueMetrics->getTotalRevenue() . ")<br /><br />";
                         echo "</p>";
 
                         echo "<h3>Google Analytics en vaste kosten en kosten marketingkanaal</h3>";
                         echo "<p>";
                         echo "Totale Kosten per maand = &euro;" . $calc->getCosts() . "<br />";
-                        echo "Kosten naar ratio " . $source['source'] . " = &euro;" . $calc->calculateCostsRatioReadable() . " <br />";
+                        echo "Kosten " . $source['source'] . " naar verhouding  = &euro;" . $calc->calculateCostsRatioReadable() . " (&euro;" . $costs . " / " . $calc->getRatioReadable() . "%)<br />";
                         echo "Klikkosten " . $source['source'] . " = &euro;" . $clickCosts . "<br />";
-                        echo "Winst = (omzet - (vaste kosten + klikkosten)): &euro;" . $calc->calculateRatioProfitReadable() . "<br />";
-                        echo "Rendement zonder specifieke kosten: " . $calc->calculateProfitPercentageReadable() . "%<br /><br />";
+                        echo "Winst: &euro;" . $calc->calculateRatioProfitReadable() . " (&euro;" . $source['transactionRevenue'] . " - &euro;" . $calc->calculateCostsRatioReadable() . " - &euro;" . $clickCosts . ") <br />";
+                        echo "Rendement nauwkeurigheids niveau 1: " . $calc->calculateProfitPercentageReadable() . "%<br /><br />";
                         echo "</p>";
 
                         echo "<h3>Google Analytics en vastekosten en specifieke kosten en inkoopkosten Magento</h3>";
                         echo "<p>";
                         echo "Totale Kosten per maand = &euro;" . $calc->getCosts() . "<br />";
-                        echo "Kosten naar ratio " . $source['source'] . " = &euro;" . $calc->calculateCostsRatioReadable() . " <br />";
+                        echo "Kosten " . $source['source'] . " naar verhouding  = &euro;" . $calc->calculateCostsRatioReadable() . " (&euro;" . $costs . " / " . $calc->getRatioReadable() . "%)<br />";
                         echo "Klikkosten " . $source['source'] . "= &euro;" . $clickCosts . "<br />";
                         echo "Belasting = &euro;" . $source['transactionTax'] . "<br />";
                         echo "Verzendkosten = &euro;" . $source['transactionShipping'] . "<br />";
                         echo "Inkoopkosten = &euro;" . $basecosts . "<br />";
-                        echo "Specifieke kosten = klikkosten + belasting + inkoopkosten + verzend: &euro;" . $calc->getSpecificCosts() . "<br />";
-                        echo "Winst = (omzet - (vaste kosten + specifiekekosten): &euro;" . $calc->calculateRatioSpecificProfitReadable() . "<br />";
-                        echo "Rendement met specifieke kosten: <span style=\"color: $color;\"><strong>" . $rendement . "%</strong></span>";
+                        echo "Specifieke kosten = klikkosten + belasting + inkoopkosten + verzend: &euro;" . $calc->getSpecificCosts() . " (&euro;" . $calc->calculateCostsRatioReadable() . " + &euro;" . $clickCosts . " + &euro;" . $source['transactionTax'] . " + &euro;" . $source['transactionShipping'] . " + &euro;" . $basecosts . ")<br />";
+                        echo "Winst: &euro;" . $efficiency . " (&euro;" . $source['transactionRevenue'] . " - &euro;" . $calc->getSpecificCosts() . ")<br />";
+                        echo "Rendement nauwkeurigheidsniveau 4: <span style=\"color: $color;\"><strong>" . $efficiency . "%</strong></span>";
                         echo "</p>";
                         echo "</div>";
                     }
