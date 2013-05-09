@@ -90,6 +90,16 @@ class GoogleAnalyticsAccount
     {
         $this->_properties['' . $webproperty->getWebPropertyId() . ''] = $webproperty;
     }
+
+    /**
+     * Returns a Property object by its Id.
+     * @param $webpropertyId
+     * @return mixed
+     */
+    public function getPropertyById($webpropertyId)
+    {
+        return $this->_properties[$webpropertyId];
+    }
 }
 
 ?>

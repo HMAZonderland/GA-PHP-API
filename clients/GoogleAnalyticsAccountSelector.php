@@ -1,17 +1,3 @@
-<section class="onerow full color3 tagline taglineimg">
-    <div class="inner">
-        <img src="http://www.presteren.nu/wp-content/uploads/static/tagline/website/pano-esser-emmerik.jpg"
-             alt="Online verkoop experts">
-
-        <div class="caption-bg" style="height: 80px;"></div>
-        <div class="onepcssgrid-1200">
-            <div class="col12">
-                <div class="caption">Selecteer een account, property en profile</div>
-            </div>
-        </div>
-        <div class="arrow" style="left: 106.57359313964844px; "></div>
-    </div>
-</section>
 <?php
 /**
  * Created by JetBrains PhpStorm.
@@ -36,9 +22,42 @@ if ((isset($_GET['propertyId']) && !empty($_GET['propertyId'])) && (isset($_GET[
     // Since we have a propertyId and accountId we know that there is only 1 account, so we can take the first object
     // from the array and use it as object.
     $GoogleAnalyticsAccount = $GoogleAnalyticsAccountList[key($GoogleAnalyticsAccountList)];
-} else {
+    $GoogleAnalyticsProperty = $GoogleAnalyticsAccount->getPropertyById($propertyId);
+    $GoogleAnalyticsProfile = $GoogleAnalyticsProperty->getProfileById($profileId);
 
     ?>
+    <section class="onerow full color3 tagline taglineimg">
+        <div class="inner">
+            <img src="http://www.presteren.nu/wp-content/uploads/static/tagline/website/pano-esser-emmerik.jpg"
+                 alt="Mannen aan het werk!">
+
+            <div class="caption-bg" style="height: 80px;"></div>
+            <div class="onepcssgrid-1200">
+                <div class="col12">
+                    <div
+                        class="caption"><?php echo $GoogleAnalyticsAccount->getName() . ' - ' . $GoogleAnalyticsProfile->getName(); ?></div>
+                </div>
+            </div>
+            <div class="arrow" style="left: 106.57359313964844px; "></div>
+        </div>
+    </section>
+<?php
+} else {
+    ?>
+    <section class="onerow full color3 tagline taglineimg">
+        <div class="inner">
+            <img src="http://www.presteren.nu/wp-content/uploads/static/tagline/website/pano-esser-emmerik.jpg"
+                 alt="Mannen aan het werk!">
+
+            <div class="caption-bg" style="height: 80px;"></div>
+            <div class="onepcssgrid-1200">
+                <div class="col12">
+                    <div class="caption">Selecteer een account, property en profile</div>
+                </div>
+            </div>
+            <div class="arrow" style="left: 106.57359313964844px; "></div>
+        </div>
+    </section>
     <section class="onerow full color1">
         <div class="onepcssgrid-1200">
             <?php

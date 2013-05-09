@@ -79,6 +79,16 @@ class Property
     {
         $this->_profiles['' . $profile->getProfileId() . ''] = $profile;
     }
+
+    /**
+     * Returns a profile by its Id
+     * @param $profileId
+     * @return mixed
+     */
+    public function getProfileById($profileId)
+    {
+        return $this->_profiles[$profileId];
+    }
 }
 
 ?>
