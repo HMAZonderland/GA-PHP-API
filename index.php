@@ -9,8 +9,11 @@ error_reporting(-1);
 require_once dirname(__FILE__) . '/includes.php';
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="nl-NL" prefix="og:http://ogp.me/ns#" class="csstransforms csstransforms3d csstransitions js">
 <head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link rel="shortcut icon" href="http://www.presteren.nu/wp-content/themes/creolio-child/favicon.ico">
 <link href="http://fonts.googleapis.com/css?family=Quattrocento:400,700" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=Patua+One" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="http://www.presteren.nu/wp-content/themes/creolio-child/style.css">
@@ -43,8 +46,8 @@ require_once dirname(__FILE__) . '/includes.php';
       href="http://www.presteren.nu/wp-content/plugins/wp-views/res/css/wpv-views-sorting.css?ver=3.5.1" type="text/css"
       media="all">
 <script type="text/javascript" src="http://www.presteren.nu/wp-includes/js/jquery/jquery.js?ver=1.8.3"></script>
-<style type="text/css">/* Color1 - White */
-
+<style type="text/css">
+    /* Color1 - White */
 .theme1 header,
 .theme1 header a,
 .theme1 .full.color3,
@@ -291,7 +294,8 @@ body.theme1,
 .theme1 .slides_container .caption {
     background: #312a1e;
     background: rgba(49, 42, 30, 0.5);
-}</style>
+}
+</style>
 <title>esser-emmerik | Rendements berekening</title>
 </head>
 <body class="page page-id-49 page-template-default theme1 ie">
