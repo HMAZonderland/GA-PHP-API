@@ -40,6 +40,7 @@ class Calculator
 
     /**
      * Sets the costs
+     *
      * @param $costs
      */
     public function setCosts($costs)
@@ -58,6 +59,7 @@ class Calculator
 
     /**
      * Sets the costs
+     *
      * @param $specificCosts
      */
     public function setSpecificCosts($specificCosts)
@@ -76,6 +78,7 @@ class Calculator
 
     /**
      * Sets the revenue
+     *
      * @param $revenue
      */
     public function setRevenue($revenue)
@@ -94,6 +97,7 @@ class Calculator
 
     /**
      * Sets the ratio
+     *
      * @param $ratio
      */
     public function setRatio($ratio)
@@ -112,145 +116,51 @@ class Calculator
     }
 
     /**
-     * Returns calculateCostsRatio() function in readable format
      * @return float
      */
-    public function calculateCostsRatioReadable()
-    {
-        return round($this->calculateCostsRatio(), 2);
-    }
-
-    /**
-     * Calculate costs based upon ratio
-     * @return mixed
-     */
-    public function calculateCostsRatio()
+    public function calculateCostRatio()
     {
         return $this->_costs * $this->_ratio;
     }
 
     /**
-     * Returns calculateRevenueRatio function in readable format
      * @return float
      */
-    public function calculateRevenueRatioReadable()
+    public function getCostRatioReadable()
     {
-        return round($this->calculateRevenueRatio(), 2);
+        return round($this->calculateCostRatio(), 2);
     }
 
     /**
-     * Calculates the ratio of the the revenue
-     * @return mixed
-     */
-    public function calculateRevenueRatio()
-    {
-        return $this->_revenue * $this->_ratio;
-    }
-
-    /**
-     * Calulates profit based upon revenue and costs
-     * @return mixed
-     */
-    public function calculateProfit()
-    {
-        return $this->_revenue - $this->_costs;
-    }
-
-    /**
-     * Return calculateProfit() function in readable format
      * @return float
      */
-    public function calculateRatioProfitReadable()
+    public function calculateProfitRatioSpecific()
     {
-        return round($this->calculateRatioProfit(), 2);
+        return (($this->_revenue - $this->_costs) * $this->_ratio) - $this->_specificCosts;
     }
 
     /**
-     * Calculates profit based upon ratio, revenue and costs
-     * @return mixed
-     */
-    public function calculateRatioProfit()
-    {
-        return $this->calculateProfit() * $this->_ratio;
-    }
-
-    /**
-     * Returns calculateRatioProfit() function in readable format
      * @return float
      */
-    public function calculateRatioSpecificProfitReadable()
+    public function getProfitRatioSpecificReadable()
     {
-        return round($this->calculateRatioProfitSpecific(), 2);
+        return round($this->calculateProfitRatioSpecific(), 2);
     }
 
     /**
-     * Calulates profit based upon ratio, revenue, costs and specific costs
-     * @return mixed
+     * @return float
      */
-    public function calculateRatioProfitSpecific()
+    public function calculateEfficiency()
     {
-        return ($this->calculateProfit() - $this->_specificCosts) * $this->_ratio;
+        return $this->calculateProfitRatioSpecific() / $this->calculateCostRatio();
     }
 
     /**
-     * Returns calculateRatioProfitSpecific() function in readable format
-     * @return float|int
+     * @return float
      */
-    public function calculateProfitPercentageReadable()
+    public function getEfficiency()
     {
-        $profitpercentage = $this->calculateRatioProfitPercentage();
-        if ($profitpercentage == 0) {
-            return $profitpercentage;
-        }
-        return round($profitpercentage * 100, 2);
-    }
-
-    /**
-     * Calculates profit percentage based upon profit and costs
-     * @return float|int
-     */
-    public function calculateRatioProfitPercentage()
-    {
-        if ($this->_ratio > 0) {
-            return $this->calculateRatioProfit() / ($this->_revenue * $this->_ratio);
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     * Retuns calculateProfitPercentage() function in readable format
-     * @return float|int
-     */
-    public function calculateProfitSpecificPercentageReadable()
-    {
-        $profitpercentage = $this->calculateProfitSpecificPercentage();
-        if ($profitpercentage == 0) {
-            return $profitpercentage;
-        }
-        return round($profitpercentage * 100, 2);
-    }
-
-    /**
-     * Calculates profit percentage based upon profit, costs and specific costs
-     * @return float|int
-     */
-    public function calculateProfitSpecificPercentage()
-    {
-        if ($this->_ratio > 0) {
-            return $this->calculateRatioSpecificProfit() / ($this->_revenue * $this->_ratio);
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     * Calclates the profit minus the specific costs.
-     * return float|int
-     */
-    public function calculateRatioSpecificProfit()
-    {
-        return $this->calculateRatioProfit() - $this->_specificCosts;
+        return round($this->calculateEfficiency() * 100, 2);
     }
 }
 
