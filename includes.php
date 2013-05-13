@@ -34,4 +34,6 @@ require_once dirname(__FILE__) . '/classes/Calculator.class.php';
 // MagentoClient
 require_once dirname(__FILE__) . '/MagentoClientLib/MagentoClient.php';
 require_once dirname(__FILE__) . '/clients/MagentoClient.php';
+require_once dirname(__FILE__) . '/classes/MagentoProduct.class.php';
+require_once dirname(__FILE__) . '/classes/MagentoOrder.class.php';
 ?>

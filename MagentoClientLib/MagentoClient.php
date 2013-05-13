@@ -71,8 +71,10 @@ class MagentoClient
 
     /**
      * Executes a request on the Magento API and gets
-     * @param $method
+     *
+     * @param       $method
      * @param mixed $arg -> could be an single argument or an array with arguments
+     *
      * @return mixed
      */
     private function _call($method, $arg)
@@ -85,7 +87,9 @@ class MagentoClient
 
     /**
      * Gets the product info by its Sku
+     *
      * @param $sku
+     *
      * @return mixed
      */
     public function getProductInfo($sku)
@@ -110,7 +114,9 @@ class MagentoClient
 
     /**
      * Calculates the profit made on a product by substracting the product costs from the product price
+     *
      * @param $sku
+     *
      * @return mixed
      */
     public function getProductProfit($sku)
@@ -121,7 +127,9 @@ class MagentoClient
 
     /**
      * Returns complete sales order by its Id
+     *
      * @param $salesOrderId
+     *
      * @return mixed
      */
     public function getSalesOrderDetails($salesOrderId)
@@ -131,7 +139,9 @@ class MagentoClient
 
     /**
      * Returns the items from a sales order by its Id
+     *
      * @param $salesOrderId
+     *
      * @return mixed
      */
     public function getSalesOrderDetailsItems($salesOrderId)
@@ -142,7 +152,9 @@ class MagentoClient
 
     /**
      * Returns all the Sku's on a sales order by its Id
+     *
      * @param $salesOrderId
+     *
      * @return array
      */
     public function getSalesOrderDetailsItemsSku($salesOrderId)
@@ -157,7 +169,9 @@ class MagentoClient
 
     /**
      * Returns the profit made on a sales order by calculating the profit made per product by its Id
+     *
      * @param $salesOrderId
+     *
      * @return int
      */
     public function getSalesOrderProfit($salesOrderId)
@@ -175,7 +189,9 @@ class MagentoClient
 
     /**
      * Calculates the basecosts of all items on a single order
+     *
      * @param $salesOrderId
+     *
      * @return int
      */
     public function getSalesOrderBaseCost($salesOrderId)
