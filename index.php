@@ -40,14 +40,19 @@ require_once dirname(__FILE__) . '/includes.php';
             </div>
             <div>online verkoop experts</div>
             <div class="phone icon-phone" onclick="location.href='tel:0357009703';">
-                <span><a href="tel:0357009703">035 -
-                        7009 703</a></span>
+                <span><a href="tel:0357009703">035 - 7009 703</a></span>
             </div>
         </div>
         <nav class="col8 last">
             <div>
                 <ul id="mainnav">
-                    <li id="menu-item-48" class="active"><a href="index.php">Selecteer een ander account</a></li>
+                    <?php
+                    if (isset($_GET['costs']) && strlen($_GET['costs']) > 0)
+                    {
+                        echo "<li id=\"menu-item-48\"><a href=\"index.php?propertyId=" . $_GET['propertyId'] . "&accountId=" . $_GET['accountId'] . "&profileId=" . $_GET['profileId'] . "\">Verander vaste lasten</a></li>";
+                    }
+                    ?>
+                    <li id="menu-item-48"><a href="index.php">Selecteer een ander account</a></li>
                     <li id="menu-item-288"><a href="index.php?logout">Uitloggen</a></li>
                 </ul>
                 <select class="selectnav" id="selectnav1" style="width: 1357px; ">
@@ -166,7 +171,7 @@ require_once dirname(__FILE__) . '/clients/GoogleAnalyticsAccountSelector.php';
                             echo "Verzendkosten = &euro;" . $source['transactionShipping'] . "<br />";
                             echo "Inkoopkosten = &euro;" . $basecosts . "<br />";
                             echo "Specifieke kosten = klikkosten + belasting + inkoopkosten + verzend: &euro;" . $calc->getSpecificCosts() . " (&euro;" . $calc->getCostRatioReadable() . " + &euro;" . $clickCosts . " + &euro;" . $source['transactionTax'] . " + &euro;" . $source['transactionShipping'] . " + &euro;" . $basecosts . ")<br />";
-                            echo "Winst: &euro;" . $calc->getEfficiency() . " (&euro;" . $source['transactionRevenue'] . " - &euro;" . $calc->getSpecificCosts() . " - &euro;" . $calc->getCostRatioReadable() .")<br />";
+                            echo "Winst: &euro;" . $calc->getProfitRatioSpecificReadable() . " (&euro;" . $source['transactionRevenue'] . " - &euro;" . $calc->getSpecificCosts() . " - &euro;" . $calc->getCostRatioReadable() .")<br />";
                             echo "Rendement nauwkeurigheidsniveau 4: <span style=\"color: $color;\"><strong>" . $calc->getEfficiency() . "%</strong></span>";
                             echo "</p>";
                             echo "</div>";
@@ -176,7 +181,7 @@ require_once dirname(__FILE__) . '/clients/GoogleAnalyticsAccountSelector.php';
             } else {
                 ?>
                 <form name="costs" method="get">
-                    <p>Vaste lasten per maand:</p>
+                    <h3>Vaste lasten per maand:</h3>
                     <p><input type="text" name="costs" required /></p>
                     <p><input type="submit" value="Verstuur!"/></p>
 

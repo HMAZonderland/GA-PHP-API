@@ -152,7 +152,7 @@ class Calculator
      */
     public function calculateEfficiency()
     {
-        return $this->calculateProfitRatioSpecific() / $this->calculateCostRatio();
+        return $this->calculateProfitRatioSpecific() / ($this->calculateCostRatio() + $this->_specificCosts);
     }
 
     /**
